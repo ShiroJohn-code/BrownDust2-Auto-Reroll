@@ -3,12 +3,16 @@ import time
 import threading
 import logging
 import socket
+import secrets
 import requests
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse, Response
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.responses import Response as StarletteResponse
 import uvicorn
+import base64
 
 # 定義資料模型
 class ConfigPayload(BaseModel):
@@ -22,6 +26,29 @@ class TelegramPayload(BaseModel):
     token: str
     chat_id: str
 
+class BasicAuthMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, username: str, password: str):
+        super().__init__(app)
+        self.username = username
+        self.password = password
+
+    async def dispatch(self, request: Request, call_next):
+        auth = request.headers.get("Authorization")
+        if auth:
+            try:
+                scheme, credentials = auth.split(" ", 1)
+                if scheme.lower() == "basic":
+                    decoded = base64.b64decode(credentials).decode("utf-8")
+                    req_user, req_pass = decoded.split(":", 1)
+                    if secrets.compare_digest(req_user, self.username) and secrets.compare_digest(req_pass, self.password):
+                        return await call_next(request)
+            except Exception:
+                pass
+        return StarletteResponse(
+            content="Unauthorized", status_code=401,
+            headers={"WWW-Authenticate": 'Basic realm="Gacha Control Panel"'}
+        )
+
 class WebController:
     def __init__(self, model, controller):
         self.model = model
@@ -32,6 +59,11 @@ class WebController:
         self.port = 8964
         self.local_ip = self.get_local_ip()
         self.public_ip = self.get_public_ip()
+
+        # Basic Auth
+        self.auth_user = self.model.config.get('WebUI', 'username', fallback='admin')
+        self.auth_pass = self.model.config.get('WebUI', 'password', fallback='admin')
+        self.app.add_middleware(BasicAuthMiddleware, username=self.auth_user, password=self.auth_pass)
 
         # === 註冊路由 ===
         self.app.get("/")(self.index)
@@ -71,7 +103,7 @@ class WebController:
             logging.info(f"Web 控制台啟動中: http://{self.local_ip}:{self.port}")
             if self.public_ip != "無法獲取":
                 logging.info(f"外網訪問地址: http://{self.public_ip}:{self.port}")
-            config = uvicorn.Config(self.app, host="127.0.0.1", port=self.port, log_level="critical")
+            config = uvicorn.Config(self.app, host="0.0.0.0", port=self.port, log_level="critical")
             server = uvicorn.Server(config)
             server.run()
         except Exception as e:
