@@ -9,7 +9,6 @@ from fastapi import FastAPI, Request, Form
 from fastapi.responses import JSONResponse, Response, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from starlette.middleware.base import BaseHTTPMiddleware
 import uvicorn
 
 # 定義資料模型
@@ -73,28 +72,54 @@ def update_ban_state(auth_state: dict, ip: str):
     if auth_state["fail_count"][ip] >= MAX_FAILURES:
         auth_state["ban_until"][ip] = time.time() + BAN_SECONDS
 
-class AuthMiddleware(BaseHTTPMiddleware):
+class AuthMiddleware:
     def __init__(self, app, password: str, session_tokens: set, auth_state: dict):
-        super().__init__(app)
+        self.app = app
         self.password = password
         self.session_tokens = session_tokens
         self.auth_state = auth_state
 
-    async def dispatch(self, request: Request, call_next):
-        if request.url.path == "/login":
-            return await call_next(request)
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
 
-        ip = get_client_ip(request)
+        path = scope.get("path", "")
+        if path == "/login":
+            await self.app(scope, receive, send)
+            return
+
+        headers = dict((k.decode(), v.decode()) for k, v in scope.get("headers", []))
+        client = scope.get("client")
+        ip = client[0] if client else "unknown"
+        forwarded = headers.get("x-forwarded-for")
+        if forwarded:
+            ip = forwarded.split(",")[0].strip()
+
         if is_ip_banned(self.auth_state, ip):
             remaining = int(self.auth_state["ban_until"][ip] - time.time())
             lock_msg = f'<p class="lock-msg">⛔ IP 已被封鎖，請在 {remaining // 60} 分鐘後重試</p>'
-            return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
+            resp = HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
+            await resp(scope, receive, send)
+            return
 
-        token = request.cookies.get("session_token")
+        cookie_header = headers.get("cookie", "")
+        token = None
+        for part in cookie_header.split(";"):
+            part = part.strip()
+            if part.startswith("session_token="):
+                token = part[len("session_token="):]
+                break
+
         if token and token in self.session_tokens:
-            return await call_next(request)
+            await self.app(scope, receive, send)
+            return
 
-        return RedirectResponse(url="/login", status_code=302)
+        if path.startswith("/api/"):
+            resp = JSONResponse({"error": "unauthorized"}, status_code=401)
+        else:
+            resp = RedirectResponse(url="/login", status_code=302)
+        await resp(scope, receive, send)
 
 class WebController:
     def __init__(self, model, controller):

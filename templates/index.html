@@ -319,6 +319,7 @@
     function updateUI() {
         fetch('/api/stats')
             .then(r => {
+                if(r.status === 401) { window.location.href = '/login'; return; }
                 if(r.ok) {
                     statusBadge.className = "badge bg-success";
                     statusBadge.textContent = "● 線上";
@@ -327,6 +328,7 @@
                 throw new Error("Offline");
             })
             .then(data => {
+                if (!data) return;
                 if (data.running) {
                     runBtn.className = "btn btn-danger btn-run";
                     runBtn.textContent = "⏹ 停止自動掛機";
