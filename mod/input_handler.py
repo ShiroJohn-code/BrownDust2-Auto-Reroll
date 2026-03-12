@@ -39,7 +39,7 @@ class InputHandler:
             time.sleep(0.01)
             ctypes.windll.user32.mouse_event(MOUSEEVENTF_LEFTUP, x, y, 0, 0)
             return True
-        except: return False
+        except Exception: return False
     
     def _send_input_click(self, x, y):
         try:
@@ -66,4 +66,4 @@ class InputHandler:
             
             ctypes.windll.user32.SendInput(3, inputs, ctypes.sizeof(INPUT))
             return True
-        except: return False
+        except Exception: return False

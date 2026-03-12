@@ -166,7 +166,7 @@ class GameModel:
             if len(files) > max_files:
                 for f in files[:len(files) - max_files]:
                     try: os.remove(f)
-                    except: pass
+                    except Exception: pass
         except Exception: pass
 
     def set_system_config(self, monitor_index):
@@ -208,7 +208,7 @@ class GameModel:
             try:
                 with open(self.log_file, "r", encoding="utf-8") as f:
                     self.draw_count = f.read().count("[第")
-            except: pass
+            except Exception: pass
 
     def load_images(self):
         try:
@@ -266,6 +266,8 @@ class GameModel:
         self.config.set('Thresholds', 'min_5star', str(min_5star))
         self.config.set('Thresholds', 'min_4star', str(min_4star))
         self.config.set('Thresholds', 'min_score', str(min_score))
+        with open(self.config_path, 'w', encoding='utf-8') as f:
+            self.config.write(f)
         logging.info(f"已更新門檻: 5星>={min_5star}, 4星>={min_4star}, 分數>={min_score}")
 
     def record_draw(self, stars_5, stars_4, stars_3, success=False):
@@ -283,15 +285,18 @@ class GameModel:
         return record
 
     def get_draw_statistics(self):
-        if not self.draw_records: return {"total_draws": self.draw_count, "avg_5star": 0.0, "avg_4star": 0.0, "success_rate": 0.0}
+        if not self.draw_records: return {"total_draws": self.draw_count, "total_5star": 0, "total_4star": 0, "avg_5star": 0.0, "avg_4star": 0.0, "success_draws": 0, "success_rate": 0.0}
         sample_size = len(self.draw_records)
         total_5star = sum(r["5_star"] for r in self.draw_records)
         total_4star = sum(r["4_star"] for r in self.draw_records)
         success_draws = sum(1 for r in self.draw_records if r["success"])
         return {
             "total_draws": self.draw_count,
+            "total_5star": total_5star,
+            "total_4star": total_4star,
             "avg_5star": total_5star / sample_size,
             "avg_4star": total_4star / sample_size,
+            "success_draws": success_draws,
             "success_rate": (success_draws / sample_size) * 100
         }
     
@@ -409,7 +414,7 @@ class GameController:
         
         try:
             # 使用 tasklist 指令獲取所有執行中的進程
-            output = subprocess.check_output("tasklist", shell=True).decode('ansi', errors='ignore')
+            output = subprocess.check_output(["tasklist"], creationflags=0x08000000).decode('mbcs', errors='ignore')
             for proc in emulator_processes:
                 if proc.lower() in output.lower():
                     logging.info(f"偵測到模擬器進程: {proc}")
@@ -535,7 +540,7 @@ class GameController:
                             self.model.save_training_data(screenshot)
 
                         s5, s4, regions = self.model.image_processor.analyze_stars(screenshot)
-                        s3 = 10 - s5 - s4
+                        s3 = max(0, 10 - s5 - s4)
                         detected = []
                         score = 0
                         if s5 >= self.model.min_5star:

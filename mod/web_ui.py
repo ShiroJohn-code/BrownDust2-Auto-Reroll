@@ -55,13 +55,13 @@ class WebController:
             ip = s.getsockname()[0]
             s.close()
             return ip
-        except: return "127.0.0.1"
+        except Exception: return "127.0.0.1"
 
     def get_public_ip(self):
         try:
             response = requests.get('https://api.ipify.org', timeout=3)
             if response.status_code == 200: return response.text
-        except: pass
+        except Exception: pass
         return "無法獲取"
 
     def start(self):
@@ -72,7 +72,7 @@ class WebController:
             logging.info(f"Web 控制台啟動中: http://{self.local_ip}:{self.port}")
             if self.public_ip != "無法獲取":
                 logging.info(f"外網訪問地址: http://{self.public_ip}:{self.port}")
-            config = uvicorn.Config(self.app, host="0.0.0.0", port=self.port, log_level="critical")
+            config = uvicorn.Config(self.app, host="127.0.0.1", port=self.port, log_level="critical")
             server = uvicorn.Server(config)
             server.run()
         except Exception as e:
@@ -131,7 +131,7 @@ class WebController:
                 "min_5star": self.model.min_5star,
                 "min_4star": self.model.min_4star,
                 "min_score": self.model.min_score,
-                "tg_token": tg_token,
+                "tg_token": (tg_token[:6] + "***") if len(tg_token) > 6 else "未設定",
                 "tg_chat_id": tg_chat_id,
                 "monitor_index": self.model.monitor_index
             },

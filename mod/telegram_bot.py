@@ -15,6 +15,7 @@ import cv2
 import numpy as np
 from PIL import Image
 from telegram import Bot, InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram.error import Conflict
 from telegram.ext import Application, CallbackQueryHandler, CommandHandler, ContextTypes
 
 class TelegramController:

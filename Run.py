@@ -47,7 +47,7 @@ def is_admin():
     """檢查是否具有管理員權限"""
     try:
         return ctypes.windll.shell32.IsUserAnAdmin()
-    except:
+    except Exception:
         return False
 
 def run_as_admin():
