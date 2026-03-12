@@ -350,7 +350,8 @@ class GameController:
         try:
             self.web_ui = WebController(self.model, self)
             self.web_ui.start()
-            self.send_web_ui_notification()
+            if self.telegram_bot:
+                self.telegram_bot.send_startup_menu_sync()
         except Exception as e: logging.error(f"Web UI 啟動失敗: {e}")
 
         self.view.show_message("程式已就緒! 按 F5 開始/暫停, F8 切換資料收集")
@@ -545,16 +546,6 @@ class GameController:
                     logging.error(f"執行錯誤: {e}")
                     time.sleep(1)
             else: time.sleep(0.5)
-
-    def send_web_ui_notification(self):
-        if not self.telegram_bot or not self.web_ui: return
-        public_ip = self.web_ui.public_ip
-        local_ip = self.web_ui.local_ip
-        port = self.web_ui.port
-        msg = f"🚀 **無限抽自動化已啟動**\n\n🌐 **Web 控制台連線資訊：**\n• 🏠 內網：`http://{local_ip}:{port}`\n"
-        if public_ip: msg += f"• 🌍 外網：`http://{public_ip}:{port}`\n\n💡 點擊上方連結即可開啟控制台"
-        else: msg += "\n(無法獲取外網 IP，請檢查網路設定)"
-        self.telegram_bot.send_message_sync(msg)
 
 class GameView:
     def show_message(self, message): logging.info(message)

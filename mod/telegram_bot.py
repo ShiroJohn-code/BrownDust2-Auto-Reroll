@@ -152,6 +152,16 @@ class TelegramController:
             self.game_model.set_thresholds(self.game_model.min_5star, new_val)
             await query.edit_message_text(self.get_settings_text(), reply_markup=self.get_settings_keyboard(), parse_mode='Markdown')
             
+        elif query.data == "reset_data":
+            self.game_model.draw_count = 0
+            self.game_model.draw_records.clear()
+            try:
+                with open(self.game_model.log_file, "w", encoding="utf-8") as f:
+                    f.write("=== 抽卡紀錄 ===\n\n")
+            except Exception:
+                pass
+            await query.edit_message_text("✅ **數據已重置！**\n\n抽卡紀錄已清除，從 0 開始重新計算。", reply_markup=self.get_settings_keyboard(), parse_mode='Markdown')
+
         elif query.data == "continue_draw":
             self.game_model.running = True
             try:
@@ -190,6 +200,7 @@ class TelegramController:
         keyboard = [
             [InlineKeyboardButton("5⭐ ➖", callback_data="set_5star_-1"), InlineKeyboardButton(f"5星: {self.game_model.min_5star}", callback_data="noop"), InlineKeyboardButton("5⭐ ➕", callback_data="set_5star_1")],
             [InlineKeyboardButton("4⭐ ➖", callback_data="set_4star_-1"), InlineKeyboardButton(f"4星: {self.game_model.min_4star}", callback_data="noop"), InlineKeyboardButton("4⭐ ➕", callback_data="set_4star_1")],
+            [InlineKeyboardButton("🗑️ 重置數據", callback_data="reset_data")],
             [InlineKeyboardButton("🔙 返回主選單", callback_data="refresh")]
         ]
         return InlineKeyboardMarkup(keyboard)
@@ -310,13 +321,26 @@ class TelegramController:
             print(f"發送訊息錯誤: {e}")
 
     # --- 關鍵修正：線程安全的同步調用 ---
-    def send_message_sync(self, text, keyboard=None):
-        """同步發送訊息 (Thread Safe)"""
-        # 檢查 Loop 是否存在且正在運行
+    async def send_startup_menu(self):
+        """啟動時發送互動主選單"""
+        if not self.bot: return
+        try:
+            text = f"🚀 **無限抽自動化已啟動**\n\n{self.get_overview_text()}"
+            await self.bot.send_message(chat_id=self.chat_id, text=text, reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
+        except Exception as e:
+            print(f"發送啟動選單錯誤: {e}")
+
+    def send_startup_menu_sync(self):
+        """同步發送啟動互動選單 (Thread Safe)"""
         if not self.loop or not self.loop.is_running():
             return
-            
-        # 使用 run_coroutine_threadsafe 將任務提交給 Bot 的 Loop
+        coro = self.send_startup_menu()
+        asyncio.run_coroutine_threadsafe(coro, self.loop)
+
+    def send_message_sync(self, text, keyboard=None):
+        """同步發送訊息 (Thread Safe)"""
+        if not self.loop or not self.loop.is_running():
+            return
         coro = self.send_message(text, keyboard)
         asyncio.run_coroutine_threadsafe(coro, self.loop)
             

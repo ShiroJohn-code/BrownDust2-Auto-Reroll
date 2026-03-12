@@ -544,3 +544,43 @@ NameError: name 'Conflict' is not defined
 2026-03-13 05:59:24,330 [INFO] 外網訪問地址: http://36.227.180.50:8964
 2026-03-13 05:59:24,331 [INFO] 當前門檻: 5星>=2, 4星>=0
 2026-03-13 05:59:24,332 [INFO] 自動點擊執行緒啟動
+2026-03-13 05:59:51,056 [INFO] 達標! 5星:4, 4星:0
+2026-03-13 06:00:18,167 [INFO] 達標! 5星:2, 4星:3
+2026-03-13 06:06:20,469 [ERROR] Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Program Files\Python310\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Program Files\Python310\lib\asyncio\proactor_events.py", line 162, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+2026-03-13 06:06:20,493 [ERROR] Exception in callback _ProactorBasePipeTransport._call_connection_lost(None)
+handle: <Handle _ProactorBasePipeTransport._call_connection_lost(None)>
+Traceback (most recent call last):
+  File "C:\Program Files\Python310\lib\asyncio\events.py", line 80, in _run
+    self._context.run(self._callback, *self._args)
+  File "C:\Program Files\Python310\lib\asyncio\proactor_events.py", line 162, in _call_connection_lost
+    self._sock.shutdown(socket.SHUT_RDWR)
+ConnectionResetError: [WinError 10054] 遠端主機已強制關閉一個現存的連線。
+2026-03-13 06:08:11,903 [INFO] 已讀取設定檔: config.ini
+2026-03-13 06:08:11,903 [INFO] 程式初始化中...
+2026-03-13 06:08:12,117 [INFO] ImageProcessor 平台已切換為: windows
+2026-03-13 06:08:12,117 [INFO] 使用平台: Windows (桌面模式)
+2026-03-13 06:08:12,127 [INFO] 圖片載入成功 (windows)
+2026-03-13 06:08:13,586 [INFO] Scheduler started
+2026-03-13 06:08:14,219 [INFO] Telegram Bot 服務已啟動
+2026-03-13 06:08:14,613 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2026-03-13 06:08:14,613 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2026-03-13 06:08:14,614 [INFO] 外網訪問地址: http://36.227.180.50:8964
+2026-03-13 06:08:14,614 [INFO] 當前門檻: 5星>=2, 4星>=0
+2026-03-13 06:08:14,615 [INFO] 自動點擊執行緒啟動
+2026-03-13 06:08:36,277 [INFO] Web UI: IP 192.168.0.68 登入成功
+2026-03-13 06:09:10,324 [INFO] 已更新門檻: 5星>=3, 4星>=0
+2026-03-13 06:10:49,523 [INFO] Web UI: IP 36.227.180.50 登入成功
+2026-03-13 06:12:28,215 [INFO] 達標! 5星:3, 4星:1
+2026-03-13 06:16:34,300 [INFO] 達標! 5星:3, 4星:2
+2026-03-13 06:17:58,185 [INFO] 達標! 5星:3, 4星:1
+2026-03-13 06:23:27,448 [INFO] 達標! 5星:3, 4星:1
+2026-03-13 06:24:50,885 [INFO] === 自動抽卡已暫停 ===
+2026-03-13 06:26:40,821 [INFO] 紀錄已重置
+2026-03-13 06:26:48,370 [INFO] 已更新門檻: 5星>=4, 4星>=0
