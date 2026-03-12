@@ -27,23 +27,58 @@ class TelegramPayload(BaseModel):
     chat_id: str
 
 class BasicAuthMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app, username: str, password: str):
+    MAX_FAILURES = 3
+    BAN_SECONDS = 3600
+
+    def __init__(self, app, password: str):
         super().__init__(app)
-        self.username = username
         self.password = password
+        self._fail_count: dict[str, int] = {}
+        self._ban_until: dict[str, float] = {}
+
+    def _client_ip(self, request: Request) -> str:
+        forwarded = request.headers.get("X-Forwarded-For")
+        if forwarded:
+            return forwarded.split(",")[0].strip()
+        return request.client.host if request.client else "unknown"
+
+    def _is_banned(self, ip: str) -> bool:
+        until = self._ban_until.get(ip, 0)
+        if until and time.time() < until:
+            return True
+        if until and time.time() >= until:
+            self._ban_until.pop(ip, None)
+            self._fail_count.pop(ip, None)
+        return False
 
     async def dispatch(self, request: Request, call_next):
+        ip = self._client_ip(request)
+        if self._is_banned(ip):
+            remaining = int(self._ban_until[ip] - time.time())
+            return StarletteResponse(
+                content=f"IP 已被封鎖，請在 {remaining // 60} 分鐘後重試", status_code=403
+            )
+
         auth = request.headers.get("Authorization")
         if auth:
             try:
                 scheme, credentials = auth.split(" ", 1)
                 if scheme.lower() == "basic":
                     decoded = base64.b64decode(credentials).decode("utf-8")
-                    req_user, req_pass = decoded.split(":", 1)
-                    if secrets.compare_digest(req_user, self.username) and secrets.compare_digest(req_pass, self.password):
+                    _, req_pass = decoded.split(":", 1)
+                    if secrets.compare_digest(req_pass, self.password):
+                        self._fail_count.pop(ip, None)
                         return await call_next(request)
             except Exception:
                 pass
+            self._fail_count[ip] = self._fail_count.get(ip, 0) + 1
+            if self._fail_count[ip] >= self.MAX_FAILURES:
+                self._ban_until[ip] = time.time() + self.BAN_SECONDS
+                logging.warning(f"Web UI: IP {ip} 連續驗證失敗 {self.MAX_FAILURES} 次，封鎖 1 小時")
+                return StarletteResponse(
+                    content="密碼錯誤次數過多，IP 已被封鎖 1 小時", status_code=403
+                )
+
         return StarletteResponse(
             content="Unauthorized", status_code=401,
             headers={"WWW-Authenticate": 'Basic realm="Gacha Control Panel"'}
@@ -60,10 +95,9 @@ class WebController:
         self.local_ip = self.get_local_ip()
         self.public_ip = self.get_public_ip()
 
-        # Basic Auth
-        self.auth_user = self.model.config.get('WebUI', 'username', fallback='admin')
+        # Basic Auth (密碼驗證 + IP 封鎖)
         self.auth_pass = self.model.config.get('WebUI', 'password', fallback='admin')
-        self.app.add_middleware(BasicAuthMiddleware, username=self.auth_user, password=self.auth_pass)
+        self.app.add_middleware(BasicAuthMiddleware, password=self.auth_pass)
 
         # === 註冊路由 ===
         self.app.get("/")(self.index)
