@@ -1,0 +1,462 @@
+2025-12-29 03:05:47,358 [INFO] 已讀取設定檔: config.ini
+2025-12-29 03:05:47,380 [INFO] 程式初始化中...
+2025-12-29 03:05:47,630 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-29 03:05:47,630 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-29 03:05:47,632 [INFO] 已連接裝置: emulator-5554
+2025-12-29 03:05:47,632 [INFO] 已連接模擬器: emulator-5554
+2025-12-29 03:05:47,632 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-29 03:05:47,634 [INFO] 圖片載入成功 (emulator)
+2025-12-29 03:05:49,124 [INFO] Scheduler started
+2025-12-29 03:05:49,722 [INFO] Telegram Bot 服務已啟動
+2025-12-29 03:05:49,726 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-29 03:05:49,726 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-29 03:05:49,726 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-29 03:05:49,728 [INFO] 自動點擊執行緒啟動
+2025-12-29 03:12:18,130 [INFO] 已讀取設定檔: config.ini
+2025-12-29 03:12:18,153 [INFO] 程式初始化中...
+2025-12-29 03:12:18,442 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-29 03:12:18,443 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-29 03:12:18,444 [INFO] 已連接裝置: emulator-5554
+2025-12-29 03:12:18,445 [INFO] 已連接模擬器: emulator-5554
+2025-12-29 03:12:18,445 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-29 03:12:18,446 [INFO] 圖片載入成功 (emulator)
+2025-12-29 03:12:20,111 [INFO] Scheduler started
+2025-12-29 03:12:20,540 [INFO] Telegram Bot 服務已啟動
+2025-12-29 03:12:20,809 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-29 03:12:20,810 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-29 03:12:20,810 [INFO] 外網訪問地址: http://111.248.128.218:8964
+2025-12-29 03:12:20,811 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-29 03:12:20,812 [INFO] 自動點擊執行緒啟動
+2025-12-29 03:12:54,321 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 03:13:04,500 [INFO] 紀錄已重置
+2025-12-29 03:20:46,848 [INFO] 已讀取設定檔: config.ini
+2025-12-29 03:20:46,868 [INFO] 程式初始化中...
+2025-12-29 03:20:47,098 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-29 03:20:47,098 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-29 03:20:47,100 [INFO] 已連接裝置: emulator-5554
+2025-12-29 03:20:47,100 [INFO] 已連接模擬器: emulator-5554
+2025-12-29 03:20:47,100 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-29 03:20:47,102 [INFO] 圖片載入成功 (emulator)
+2025-12-29 03:20:48,708 [INFO] Scheduler started
+2025-12-29 03:20:49,197 [INFO] Telegram Bot 服務已啟動
+2025-12-29 03:20:49,599 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-29 03:20:49,600 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-29 03:20:49,600 [INFO] 外網訪問地址: http://111.248.128.218:8964
+2025-12-29 03:20:49,601 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-29 03:20:49,602 [INFO] 自動點擊執行緒啟動
+2025-12-29 03:21:40,850 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 03:31:51,236 [INFO] 已讀取設定檔: config.ini
+2025-12-29 03:31:51,258 [INFO] 程式初始化中...
+2025-12-29 03:31:51,518 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-29 03:31:51,518 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-29 03:31:51,520 [INFO] 已連接裝置: emulator-5554
+2025-12-29 03:31:51,520 [INFO] 已連接模擬器: emulator-5554
+2025-12-29 03:31:51,521 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-29 03:31:51,522 [INFO] 圖片載入成功 (emulator)
+2025-12-29 03:31:53,203 [INFO] Scheduler started
+2025-12-29 03:31:53,623 [INFO] Telegram Bot 服務已啟動
+2025-12-29 03:31:54,010 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-29 03:31:54,011 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-29 03:31:54,011 [INFO] 外網訪問地址: http://111.248.128.218:8964
+2025-12-29 03:31:54,012 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-29 03:31:54,013 [INFO] 自動點擊執行緒啟動
+2025-12-29 03:32:10,472 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 03:33:11,938 [INFO] === 自動抽卡已暫停 ===
+2025-12-29 03:33:12,819 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 03:33:13,052 [INFO] === 自動抽卡已暫停 ===
+2025-12-29 03:33:13,256 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 03:37:37,092 [INFO] 程式初始化中...
+2025-12-29 03:37:37,333 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-29 03:37:37,333 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-29 03:37:37,335 [INFO] 已連接裝置: emulator-5554
+2025-12-29 03:37:37,335 [INFO] 已連接模擬器: emulator-5554
+2025-12-29 03:37:37,336 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-29 03:37:37,337 [INFO] 圖片載入成功 (emulator)
+2025-12-29 03:37:38,885 [INFO] Scheduler started
+2025-12-29 03:37:39,423 [INFO] Telegram Bot 服務已啟動
+2025-12-29 03:37:39,810 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-29 03:37:39,810 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-29 03:37:39,810 [INFO] 外網訪問地址: http://111.248.128.218:8964
+2025-12-29 03:37:39,811 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-29 03:37:39,813 [INFO] 自動點擊執行緒啟動 (極速 ROI 版)
+2025-12-29 03:37:55,777 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 03:37:56,257 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:37:57,706 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:37:59,145 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:00,570 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:02,002 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:03,443 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:04,869 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:06,292 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:07,729 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:09,183 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:10,612 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:12,031 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:13,468 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:14,888 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:16,325 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:16,454 [INFO] === 自動抽卡已暫停 ===
+2025-12-29 03:38:53,100 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 03:38:53,787 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:55,215 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:56,652 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:58,105 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:59,528 [ERROR] 執行錯誤: ImageProcessor.find_image() got an unexpected keyword argument 'region'
+2025-12-29 03:38:59,589 [INFO] === 自動抽卡已暫停 ===
+2025-12-29 03:40:29,426 [INFO] 已讀取設定檔: config.ini
+2025-12-29 03:40:29,447 [INFO] 程式初始化中...
+2025-12-29 03:40:29,670 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-29 03:40:29,671 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-29 03:40:29,672 [INFO] 已連接裝置: emulator-5554
+2025-12-29 03:40:29,672 [INFO] 已連接模擬器: emulator-5554
+2025-12-29 03:40:29,673 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-29 03:40:29,675 [INFO] 圖片載入成功 (emulator)
+2025-12-29 03:40:31,337 [INFO] Scheduler started
+2025-12-29 03:40:31,757 [INFO] Telegram Bot 服務已啟動
+2025-12-29 03:40:32,134 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-29 03:40:32,135 [INFO] 外網訪問地址: http://111.248.128.218:8964
+2025-12-29 03:40:32,135 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-29 03:40:32,136 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-29 03:40:32,137 [INFO] 自動點擊執行緒啟動
+2025-12-29 03:40:49,592 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 03:41:40,132 [INFO] 螢幕設定已更新為: 1
+2025-12-29 04:35:37,096 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 0020device 'emulator-5554' not found
+2025-12-29 04:52:09,582 [INFO] 已讀取設定檔: config.ini
+2025-12-29 04:52:09,727 [INFO] 程式初始化中...
+2025-12-29 04:52:09,933 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-29 04:52:09,934 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-29 04:52:09,936 [INFO] 已連接裝置: emulator-5554
+2025-12-29 04:52:09,936 [INFO] 已連接模擬器: emulator-5554
+2025-12-29 04:52:09,937 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-29 04:52:09,951 [INFO] 圖片載入成功 (emulator)
+2025-12-29 04:52:11,559 [INFO] Scheduler started
+2025-12-29 04:52:12,056 [INFO] Telegram Bot 服務已啟動
+2025-12-29 04:52:12,440 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-29 04:52:12,440 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-29 04:52:12,440 [INFO] 外網訪問地址: http://111.248.128.218:8964
+2025-12-29 04:52:12,441 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-29 04:52:12,442 [INFO] 自動點擊執行緒啟動
+2025-12-29 04:55:23,224 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 05:02:38,317 [INFO] 達標! 5星:4, 4星:0, 分數:10
+2025-12-29 05:02:47,690 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 05:09:39,684 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-29 05:09:50,723 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-29 05:09:51,722 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-29 05:09:53,229 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-29 05:10:09,539 [INFO] 正在停止程式...
+2025-12-29 05:10:09,539 [INFO] 正在關閉 Telegram Bot...
+2025-12-29 05:10:09,540 [INFO] 程式已結束
+2025-12-29 05:33:43,926 [INFO] 已讀取設定檔: config.ini
+2025-12-29 05:33:44,132 [INFO] 程式初始化中...
+2025-12-29 05:33:44,402 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-29 05:33:44,403 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-29 05:33:44,404 [INFO] 已連接裝置: emulator-5554
+2025-12-29 05:33:44,404 [INFO] 已連接模擬器: emulator-5554
+2025-12-29 05:33:44,405 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-29 05:33:44,425 [INFO] 圖片載入成功 (emulator)
+2025-12-29 05:33:46,053 [INFO] Scheduler started
+2025-12-29 05:33:46,534 [INFO] Telegram Bot 服務已啟動
+2025-12-29 05:33:46,928 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 05:33:46,928 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-29 05:33:46,929 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-29 05:33:46,931 [INFO] 外網訪問地址: http://111.248.142.202:8964
+2025-12-29 05:33:46,932 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-29 05:33:46,933 [INFO] 自動點擊執行緒啟動
+2025-12-29 05:33:48,912 [INFO] === 自動抽卡已暫停 ===
+2025-12-29 05:34:04,972 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 06:19:38,880 [INFO] 達標! 5星:4, 4星:0, 分數:11
+2025-12-29 06:20:26,293 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 07:19:21,152 [INFO] 
+=== 抽卡統計 ===
+總次數: 775
+平均5星: 1.27
+成功率: 0.13%
+2025-12-29 08:46:31,923 [INFO] 達標! 5星:4, 4星:1, 分數:14
+2025-12-29 08:46:41,685 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 11:53:18,463 [INFO] 達標! 5星:4, 4星:0, 分數:9
+2025-12-29 15:58:32,968 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 16:03:40,030 [INFO] 達標! 5星:4, 4星:1, 分數:12
+2025-12-29 16:23:59,827 [INFO] 達標! 5星:4, 4星:0, 分數:5
+2025-12-29 16:53:49,047 [INFO] 達標! 5星:4, 4星:2, 分數:10
+2025-12-29 16:55:04,796 [INFO] 達標! 5星:4, 4星:1, 分數:10
+2025-12-29 17:31:41,540 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-29 17:47:18,514 [INFO] 達標! 5星:4, 4星:1, 分數:5
+2025-12-29 18:03:17,704 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 18:06:44,836 [INFO] 達標! 5星:4, 4星:0, 分數:11
+2025-12-29 18:39:13,652 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 19:35:44,215 [INFO] 達標! 5星:4, 4星:1, 分數:5
+2025-12-29 19:35:56,190 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 19:35:58,862 [INFO] 達標! 5星:4, 4星:1, 分數:1
+2025-12-29 19:56:02,932 [INFO] === 自動抽卡已啟動 ===
+2025-12-29 23:26:31,323 [INFO] 達標! 5星:4, 4星:1, 分數:7
+2025-12-29 23:46:02,707 [INFO] === 自動抽卡已啟動 ===
+2025-12-30 01:00:51,293 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 0020device 'emulator-5554' not found
+2025-12-30 01:31:11,682 [INFO] 已讀取設定檔: config.ini
+2025-12-30 01:31:11,876 [INFO] 程式初始化中...
+2025-12-30 01:31:12,125 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-30 01:31:12,126 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-30 01:31:12,128 [INFO] 已連接裝置: emulator-5554
+2025-12-30 01:31:12,128 [INFO] 已連接模擬器: emulator-5554
+2025-12-30 01:31:12,129 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-30 01:31:12,146 [INFO] 圖片載入成功 (emulator)
+2025-12-30 01:31:14,322 [INFO] Telegram Bot 服務已啟動
+2025-12-30 01:31:15,068 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-30 01:31:15,068 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-30 01:31:15,069 [INFO] 外網訪問地址: http://111.248.142.202:8964
+2025-12-30 01:31:15,069 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-30 01:31:15,070 [INFO] 自動點擊執行緒啟動
+2025-12-30 01:31:15,177 [INFO] Scheduler started
+2025-12-30 01:34:01,308 [INFO] === 自動抽卡已啟動 ===
+2025-12-30 02:04:42,191 [INFO] 達標! 5星:4, 4星:1, 分數:6
+2025-12-30 02:12:28,414 [INFO] === 自動抽卡已啟動 ===
+2025-12-30 02:31:23,065 [INFO] 達標! 5星:4, 4星:1, 分數:9
+2025-12-30 02:31:34,175 [INFO] === 自動抽卡已啟動 ===
+2025-12-30 02:35:30,426 [INFO] 達標! 5星:4, 4星:1, 分數:14
+2025-12-30 07:44:41,805 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-30 07:44:43,127 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-30 07:44:44,946 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-30 07:44:47,498 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-30 07:44:51,188 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-30 07:44:57,181 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-30 10:32:07,785 [INFO] 已讀取設定檔: config.ini
+2025-12-30 10:32:07,916 [INFO] 程式初始化中...
+2025-12-30 10:32:08,089 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-30 10:32:08,090 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-30 10:32:08,091 [INFO] 已連接裝置: emulator-5554
+2025-12-30 10:32:08,092 [INFO] 已連接模擬器: emulator-5554
+2025-12-30 10:32:08,092 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-30 10:32:08,106 [INFO] 圖片載入成功 (emulator)
+2025-12-30 10:32:09,982 [INFO] Scheduler started
+2025-12-30 10:32:10,187 [INFO] Telegram Bot 服務已啟動
+2025-12-30 10:32:10,563 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-30 10:32:10,564 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-30 10:32:10,564 [INFO] 外網訪問地址: http://111.248.142.202:8964
+2025-12-30 10:32:10,565 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-30 10:32:10,567 [INFO] 自動點擊執行緒啟動
+2025-12-30 15:10:45,455 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-30 20:04:22,337 [INFO] === 自動抽卡已啟動 ===
+2025-12-30 20:31:06,509 [INFO] 達標! 5星:4, 4星:1, 分數:9
+2025-12-30 20:31:24,061 [INFO] === 自動抽卡已啟動 ===
+2025-12-30 21:28:30,310 [INFO] 達標! 5星:4, 4星:1, 分數:6
+2025-12-30 23:39:38,978 [INFO] 達標! 5星:4, 4星:1, 分數:7
+2025-12-31 01:55:30,838 [INFO] 達標! 5星:4, 4星:1, 分數:8
+2025-12-31 01:55:42,502 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 02:00:32,171 [INFO] 達標! 5星:4, 4星:0, 分數:7
+2025-12-31 02:00:45,691 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 02:55:19,867 [INFO] 達標! 5星:4, 4星:2, 分數:2
+2025-12-31 02:55:53,910 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 03:59:48,426 [INFO] 達標! 5星:4, 4星:0, 分數:9
+2025-12-31 04:12:24,345 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 04:38:50,479 [INFO] 達標! 5星:5, 4星:0, 分數:2
+2025-12-31 05:01:22,417 [INFO] 達標! 5星:4, 4星:1, 分數:5
+2025-12-31 05:18:34,300 [INFO] 達標! 5星:4, 4星:3, 分數:12
+2025-12-31 06:36:18,763 [INFO] 已讀取設定檔: config.ini
+2025-12-31 06:36:18,887 [INFO] 程式初始化中...
+2025-12-31 06:36:19,060 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-31 06:36:19,060 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-31 06:36:19,062 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:36:19,062 [INFO] 已連接模擬器: emulator-5566
+2025-12-31 06:36:19,063 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-31 06:36:19,075 [INFO] 圖片載入成功 (emulator)
+2025-12-31 06:36:20,607 [INFO] Scheduler started
+2025-12-31 06:36:21,164 [INFO] Telegram Bot 服務已啟動
+2025-12-31 06:36:21,552 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-31 06:36:21,553 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-31 06:36:21,553 [INFO] 外網訪問地址: http://111.248.142.202:8964
+2025-12-31 06:36:21,554 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-31 06:36:21,555 [INFO] 自動點擊執行緒啟動
+2025-12-31 06:39:02,689 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 06:39:02,802 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:02,803 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:02,805 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:03,907 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:03,908 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:03,909 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:05,012 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:05,013 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:05,014 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:06,116 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:06,117 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:06,119 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:07,221 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:07,222 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:07,223 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:08,324 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:08,325 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:08,326 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:09,428 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:09,429 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:09,430 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:10,532 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:10,533 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:10,534 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:11,635 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:11,636 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:11,637 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:12,739 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:12,740 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:12,741 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:13,843 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:13,844 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:13,845 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:14,946 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:14,947 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:14,949 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:16,051 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:16,052 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:16,053 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:17,155 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:17,156 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:17,157 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:18,259 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:18,260 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:18,261 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:19,362 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:19,363 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:19,364 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:20,467 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:20,468 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:20,469 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:21,570 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:21,571 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:21,572 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:22,673 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:22,674 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:22,675 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:23,777 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:23,778 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:23,779 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:24,881 [ERROR] ADB 截圖失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:24,882 [INFO] 已連接裝置: emulator-5566
+2025-12-31 06:39:24,883 [ERROR] ADB 點擊失敗: ERROR: 'FAIL' 000edevice offline
+2025-12-31 06:39:34,900 [INFO] 已讀取設定檔: config.ini
+2025-12-31 06:39:34,919 [INFO] 程式初始化中...
+2025-12-31 06:39:35,092 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-31 06:39:35,092 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-31 06:39:35,094 [INFO] 已連接裝置: emulator-5554
+2025-12-31 06:39:35,094 [INFO] 已連接模擬器: emulator-5554
+2025-12-31 06:39:35,095 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-31 06:39:35,096 [INFO] 圖片載入成功 (emulator)
+2025-12-31 06:39:36,563 [INFO] Scheduler started
+2025-12-31 06:39:37,181 [INFO] Telegram Bot 服務已啟動
+2025-12-31 06:39:37,566 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-31 06:39:37,566 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-31 06:39:37,566 [INFO] 外網訪問地址: http://111.248.142.202:8964
+2025-12-31 06:39:37,566 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-31 06:39:37,568 [INFO] 自動點擊執行緒啟動
+2025-12-31 06:40:15,646 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 06:40:26,077 [INFO] === 自動抽卡已暫停 ===
+2025-12-31 06:44:21,155 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 06:44:31,850 [INFO] === 自動抽卡已暫停 ===
+2025-12-31 07:14:51,235 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-31 07:25:40,998 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-31 07:25:42,291 [ERROR] An error was raised and an uncaught error was raised while handling the error with an error_handler.
+Traceback (most recent call last):
+  File "C:\Users\johnf\AppData\Roaming\Python\Python310\site-packages\telegram\ext\_application.py", line 1925, in process_error
+    await callback(update, context)
+  File "D:\TEMP\無限抽_2K\mod\telegram_bot.py", line 77, in error_handler
+    if isinstance(context.error, Conflict):
+NameError: name 'Conflict' is not defined
+2025-12-31 08:27:17,932 [INFO] 已讀取設定檔: config.ini
+2025-12-31 08:27:17,952 [INFO] 程式初始化中...
+2025-12-31 08:27:18,125 [INFO] 偵測到模擬器進程: dnplayer.exe
+2025-12-31 08:27:18,126 [INFO] 嘗試連接 ADB: D:\LDPlayer\LDPlayer9\adb.exe
+2025-12-31 08:27:18,126 [INFO] 已連接裝置: emulator-5554
+2025-12-31 08:27:18,127 [INFO] 已連接模擬器: emulator-5554
+2025-12-31 08:27:18,127 [INFO] ImageProcessor 平台已切換為: emulator
+2025-12-31 08:27:18,129 [INFO] 圖片載入成功 (emulator)
+2025-12-31 08:27:19,625 [INFO] Scheduler started
+2025-12-31 08:27:20,233 [INFO] Telegram Bot 服務已啟動
+2025-12-31 08:27:20,612 [INFO] Web 控制台啟動中: http://192.168.0.68:8964
+2025-12-31 08:27:20,612 [INFO] 程式已就緒! 按 F5 開始/暫停, F8 切換資料收集
+2025-12-31 08:27:20,613 [INFO] 外網訪問地址: http://111.248.142.202:8964
+2025-12-31 08:27:20,613 [INFO] 當前門檻: 5星>=4, 4星>=0, 分數>=0
+2025-12-31 08:27:20,615 [INFO] 自動點擊執行緒啟動
+2025-12-31 08:27:28,572 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 09:23:40,564 [INFO] 達標! 5星:4, 4星:0, 分數:7
+2025-12-31 09:24:17,540 [INFO] === 自動抽卡已啟動 ===
+2025-12-31 09:33:31,422 [INFO] 達標! 5星:5, 4星:1, 分數:2
