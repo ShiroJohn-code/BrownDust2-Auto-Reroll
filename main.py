@@ -19,7 +19,6 @@ from PIL import Image
 
 # 自定義模組
 from mod.telegram_bot import TelegramController
-from mod.character_detector import CharacterDetector
 from mod.ld_controller import LDController
 from mod.web_ui import WebController
 from mod.image_processor import ImageProcessor
@@ -87,7 +86,6 @@ class GameModel:
         self.ld = None
         
         # [核心模組初始化]
-        self.character_detector = CharacterDetector(self.script_dir / 'get')
         self.image_processor = ImageProcessor(self.platform)
 
     def setup_logging(self):
@@ -124,7 +122,7 @@ class GameModel:
         self.config_path = self.script_dir / 'config.ini'
         
         defaults = {
-            'Thresholds': {'min_5star': '1', 'min_4star': '0', 'min_score': '0'},
+            'Thresholds': {'min_5star': '1', 'min_4star': '0'},
             'System': {'monitor_index': '1'}
         }
 
@@ -142,15 +140,13 @@ class GameModel:
             try:
                 self.min_5star = self.config.getint('Thresholds', 'min_5star')
                 self.min_4star = self.config.getint('Thresholds', 'min_4star')
-                self.min_score = self.config.getint('Thresholds', 'min_score')
                 self.monitor_index = self.config.getint('System', 'monitor_index')
             except (ValueError, configparser.Error) as e:
                 logging.error(f"設定檔異常 ({e})，使用預設值")
                 self.min_5star = 1
                 self.min_4star = 0
-                self.min_score = 0
                 self.monitor_index = 1
-                self.set_thresholds(1, 0, 0)
+                self.set_thresholds(1, 0)
                 self.set_system_config(1)
 
         except Exception as e:
@@ -248,27 +244,17 @@ class GameModel:
             logging.error(f"截圖失敗: {e}")
             return None
 
-    def detect_five_star_characters(self, screenshot, five_star_regions, debug_mode=False, debug_path=None):
-        if not five_star_regions: return [], 0, ""
-        detected = self.character_detector.detect_characters_in_regions(screenshot, five_star_regions, debug_mode, debug_path)
-        score = self.character_detector.calculate_total_score(detected)
-        info = self.character_detector.format_characters_info(detected)
-        if debug_mode: logging.info(f"檢測到的5星角色: {info}")
-        return detected, score, info
+    def meets_threshold(self, stars_5, stars_4):
+        return (stars_5 >= self.min_5star) and (stars_4 >= self.min_4star)
 
-    def meets_threshold(self, stars_5, stars_4, total_score=0):
-        return (stars_5 >= self.min_5star) and (stars_4 >= self.min_4star) and (total_score >= self.min_score)
-
-    def set_thresholds(self, min_5star, min_4star, min_score=0):
+    def set_thresholds(self, min_5star, min_4star):
         self.min_5star = min_5star
         self.min_4star = min_4star
-        self.min_score = min_score
         self.config.set('Thresholds', 'min_5star', str(min_5star))
         self.config.set('Thresholds', 'min_4star', str(min_4star))
-        self.config.set('Thresholds', 'min_score', str(min_score))
         with open(self.config_path, 'w', encoding='utf-8') as f:
             self.config.write(f)
-        logging.info(f"已更新門檻: 5星>={min_5star}, 4星>={min_4star}, 分數>={min_score}")
+        logging.info(f"已更新門檻: 5星>={min_5star}, 4星>={min_4star}")
 
     def record_draw(self, stars_5, stars_4, stars_3, success=False):
         self.draw_count += 1
@@ -368,7 +354,7 @@ class GameController:
         except Exception as e: logging.error(f"Web UI 啟動失敗: {e}")
 
         self.view.show_message("程式已就緒! 按 F5 開始/暫停, F8 切換資料收集")
-        logging.info(f"當前門檻: 5星>={self.model.min_5star}, 4星>={self.model.min_4star}, 分數>={self.model.min_score}")
+        logging.info(f"當前門檻: 5星>={self.model.min_5star}, 4星>={self.model.min_4star}")
         
         threading.Thread(target=self.auto_click_process, daemon=True).start()
         
@@ -512,11 +498,8 @@ class GameController:
             
             stars_5, stars_4, regions = self.model.image_processor.analyze_stars(screenshot, True, debug_path)
             
-            info = "無"
-            score = 0
-            if stars_5 > 0: _, score, info = self.model.detect_five_star_characters(screenshot, regions, True, debug_path)
-            passed = self.model.meets_threshold(stars_5, stars_4, score)
-            self.view.show_message(f"檢測結果: 5星={stars_5}, 4星={stars_4}, 總分={score}, 達標={passed}")
+            passed = self.model.meets_threshold(stars_5, stars_4)
+            self.view.show_message(f"檢測結果: 5星={stars_5}, 4星={stars_4}, 達標={passed}")
         except Exception: traceback.print_exc()
 
     def click_position(self, position):
@@ -541,15 +524,11 @@ class GameController:
 
                         s5, s4, regions = self.model.image_processor.analyze_stars(screenshot)
                         s3 = max(0, 10 - s5 - s4)
-                        detected = []
-                        score = 0
-                        if s5 >= self.model.min_5star:
-                            detected, score, _ = self.model.detect_five_star_characters(screenshot, regions)
-                        success = self.model.meets_threshold(s5, s4, score)
+                        success = self.model.meets_threshold(s5, s4)
                         self.model.record_draw(s5, s4, s3, success)
                         if success:
-                            logging.info(f"達標! 5星:{s5}, 4星:{s4}, 分數:{score}")
-                            if self.telegram_bot: self.telegram_bot.send_success_notification_sync(screenshot, s5, s4, s3, detected)
+                            logging.info(f"達標! 5星:{s5}, 4星:{s4}")
+                            if self.telegram_bot: self.telegram_bot.send_success_notification_sync(screenshot, s5, s4, s3)
                             self.model.running = False
                             while not self.model.running and not self.model.stop_event.is_set(): time.sleep(0.5)
                             if self.model.running: 

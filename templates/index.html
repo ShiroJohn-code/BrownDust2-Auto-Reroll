@@ -177,10 +177,6 @@
                                 <input type="number" class="form-control" id="min-4star" required>
                             </div>
                         </div>
-                        <div class="mb-3">
-                            <label class="small text-sub">最小總分</label>
-                            <input type="number" class="form-control" id="min-score" required>
-                        </div>
                         <button type="submit" class="btn btn-primary w-100">更新門檻</button>
                     </form>
                 </div>
@@ -294,8 +290,7 @@
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 min_5star: parseInt(document.getElementById('min-5star').value),
-                min_4star: parseInt(document.getElementById('min-4star').value),
-                min_score: parseInt(document.getElementById('min-score').value)
+                min_4star: parseInt(document.getElementById('min-4star').value)
             })
         }).then(() => alert('✅ 門檻參數已更新'));
     }
@@ -355,7 +350,6 @@
                 if (document.activeElement.tagName !== 'INPUT') {
                     document.getElementById('min-5star').value = data.config.min_5star;
                     document.getElementById('min-4star').value = data.config.min_4star;
-                    document.getElementById('min-score').value = data.config.min_score;
                     document.getElementById('monitor-idx').value = data.config.monitor_index;
                     
                     // [新增] 自動填入 Telegram 設定

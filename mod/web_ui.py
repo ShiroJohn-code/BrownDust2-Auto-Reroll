@@ -14,7 +14,6 @@ import uvicorn
 class ConfigPayload(BaseModel):
     min_5star: int
     min_4star: int
-    min_score: int
 
 class SystemPayload(BaseModel):
     monitor_index: int
@@ -130,7 +129,6 @@ class WebController:
             "config": {
                 "min_5star": self.model.min_5star,
                 "min_4star": self.model.min_4star,
-                "min_score": self.model.min_score,
                 "tg_token": (tg_token[:6] + "***") if len(tg_token) > 6 else "未設定",
                 "tg_chat_id": tg_chat_id,
                 "monitor_index": self.model.monitor_index
@@ -151,7 +149,7 @@ class WebController:
         return JSONResponse({"status": "ok", "message": "統計數據已歸零"})
 
     async def update_config(self, payload: ConfigPayload):
-        self.model.set_thresholds(payload.min_5star, payload.min_4star, payload.min_score)
+        self.model.set_thresholds(payload.min_5star, payload.min_4star)
         return JSONResponse({"status": "ok"})
 
     async def update_system(self, payload: SystemPayload):

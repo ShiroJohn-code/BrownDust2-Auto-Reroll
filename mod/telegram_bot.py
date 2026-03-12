@@ -234,7 +234,7 @@ class TelegramController:
         status = "🟢 運行中" if self.game_model.running else "🔴 已暫停"
         text = f"📊 **程式狀態**\n\n🔹 **狀態：** {status}\n🔹 **總抽卡次數：** {self.game_model.draw_count} 次\n"
         text += f"🔹 **星級門檻：** 5星 {self.game_model.min_5star}個, 4星 {self.game_model.min_4star}個\n"
-        text += f"🔹 **分數門檻：** {self.game_model.min_score} 分\n🔹 **更新時間：** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        text += f"🔹 **更新時間：** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
         return text
 
     def get_stats_text(self):
@@ -257,20 +257,13 @@ class TelegramController:
         return text
 
     # --- 訊息發送邏輯 ---
-    async def send_success_notification(self, screenshot, stars_5, stars_4, stars_3, detected_characters=None):
+    async def send_success_notification(self, screenshot, stars_5, stars_4, stars_3):
         """發送成功通知並附上截圖 (Async 內部方法)"""
         if not self.bot: return
         try:
-            char_info = ""
-            if detected_characters:
-                names = [name for name, score in detected_characters if name != '未知角色']
-                char_info = f"🎭 **檢測到角色：** {', '.join(names)}\n" if names else "🎭 **檢測到角色：** 未知角色\n"
-            elif stars_5 > 0:
-                char_info = "🎭 **檢測到角色：** 未知角色\n"
-            
             msg_text = (
                 f"🎉 **達到星級門檻！**\n\n⭐ **結果：**\n• 5星：{stars_5} 個\n• 4星：{stars_4} 個\n• 3星：{stars_3} 個\n\n"
-                f"{char_info}🎯 **目標門檻：** 5星 {self.game_model.min_5star}個, 4星 {self.game_model.min_4star}個\n"
+                f"🎯 **目標門檻：** 5星 {self.game_model.min_5star}個, 4星 {self.game_model.min_4star}個\n"
                 f"📊 **總抽卡次數：** {self.game_model.draw_count} 次\n\n請確認是否要繼續抽卡："
             )
             
@@ -339,13 +332,13 @@ class TelegramController:
         coro = self.send_message(text, keyboard)
         asyncio.run_coroutine_threadsafe(coro, self.loop)
             
-    def send_success_notification_sync(self, screenshot, stars_5, stars_4, stars_3, detected_characters=None):
+    def send_success_notification_sync(self, screenshot, stars_5, stars_4, stars_3):
         """同步發送成功通知 (Thread Safe)"""
         if not self.loop or not self.loop.is_running():
             print("Telegram Bot 未在運行中，略過通知")
             return
             
-        coro = self.send_success_notification(screenshot, stars_5, stars_4, stars_3, detected_characters)
+        coro = self.send_success_notification(screenshot, stars_5, stars_4, stars_3)
         future = asyncio.run_coroutine_threadsafe(coro, self.loop)
         
         # 可選：在這裡可以捕捉 future 的異常，但不要阻塞主線程太久
