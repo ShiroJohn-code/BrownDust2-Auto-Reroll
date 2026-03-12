@@ -5,6 +5,7 @@ import logging
 import socket
 import secrets
 import requests
+from string import Template
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import JSONResponse, Response, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
@@ -23,7 +24,7 @@ class TelegramPayload(BaseModel):
     token: str
     chat_id: str
 
-LOGIN_PAGE_HTML = """<!DOCTYPE html>
+_LOGIN_PAGE_TPL = Template("""<!DOCTYPE html>
 <html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>登入 - Gacha Control Panel</title>
 <style>
@@ -41,13 +42,13 @@ button:hover{background:#0b5ed7}
 <div class="login-box">
 <h2>🔒 控制台登入</h2>
 <p class="subtitle">Gacha Automation Panel</p>
-{error}
+$error
 <form method="POST" action="/login">
 <input type="password" name="password" placeholder="請輸入密碼" autofocus required>
 <button type="submit">登入</button>
 </form>
-{lock_msg}
-</div></body></html>"""
+$lock_msg
+</div></body></html>""")
 
 MAX_FAILURES = 3
 BAN_SECONDS = 3600
@@ -99,7 +100,7 @@ class AuthMiddleware:
         if is_ip_banned(self.auth_state, ip):
             remaining = int(self.auth_state["ban_until"][ip] - time.time())
             lock_msg = f'<p class="lock-msg">⛔ IP 已被封鎖，請在 {remaining // 60} 分鐘後重試</p>'
-            resp = HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
+            resp = HTMLResponse(_LOGIN_PAGE_TPL.substitute(error="", lock_msg=lock_msg), status_code=403)
             await resp(scope, receive, send)
             return
 
@@ -191,15 +192,15 @@ class WebController:
         if is_ip_banned(self.auth_state, ip):
             remaining = int(self.auth_state["ban_until"][ip] - time.time())
             lock_msg = f'<p class="lock-msg">⛔ IP 已被封鎖，請在 {remaining // 60} 分鐘後重試</p>'
-            return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
-        return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=""))
+            return HTMLResponse(_LOGIN_PAGE_TPL.substitute(error="", lock_msg=lock_msg), status_code=403)
+        return HTMLResponse(_LOGIN_PAGE_TPL.substitute(error="", lock_msg=""))
 
     async def login_submit(self, request: Request, password: str = Form(...)):
         ip = get_client_ip(request)
         if is_ip_banned(self.auth_state, ip):
             remaining = int(self.auth_state["ban_until"][ip] - time.time())
             lock_msg = f'<p class="lock-msg">⛔ IP 已被封鎖，請在 {remaining // 60} 分鐘後重試</p>'
-            return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
+            return HTMLResponse(_LOGIN_PAGE_TPL.substitute(error="", lock_msg=lock_msg), status_code=403)
 
         if secrets.compare_digest(password, self.auth_pass):
             token = secrets.token_hex(32)
@@ -215,9 +216,9 @@ class WebController:
             self.auth_state["ban_until"][ip] = time.time() + BAN_SECONDS
             logging.warning(f"Web UI: IP {ip} 連續驗證失敗 {MAX_FAILURES} 次，封鎖 1 小時")
             lock_msg = '<p class="lock-msg">⛔ 密碼錯誤次數過多，IP 已被封鎖 1 小時</p>'
-            return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
+            return HTMLResponse(_LOGIN_PAGE_TPL.substitute(error="", lock_msg=lock_msg), status_code=403)
         error_html = '<p class="error">❌ 密碼錯誤，請重試</p>'
-        return HTMLResponse(LOGIN_PAGE_HTML.format(error=error_html, lock_msg=""), status_code=401)
+        return HTMLResponse(_LOGIN_PAGE_TPL.substitute(error=error_html, lock_msg=""), status_code=401)
 
     async def index(self, request: Request):
         return self.templates.TemplateResponse("index.html", {
