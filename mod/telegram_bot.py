@@ -97,119 +97,85 @@ class TelegramController:
             asyncio.run_coroutine_threadsafe(self.stop_bot(), self.loop)
 
         
-    # --- 命令處理器 (保持不變) ---
+    # --- 命令處理器 ---
     async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        keyboard = [
-            [
-                InlineKeyboardButton("🎮 開始抽卡", callback_data="start_draw"),
-                InlineKeyboardButton("⏸️ 暫停抽卡", callback_data="pause_draw")
-            ],
-            [
-                InlineKeyboardButton("📊 查看狀態", callback_data="check_status"),
-                InlineKeyboardButton("📈 查看統計", callback_data="check_stats")
-            ],
-            [
-                InlineKeyboardButton("🌟 五星分布", callback_data="check_distribution"),
-                InlineKeyboardButton("🔄 刷新", callback_data="refresh")
-            ]
-        ]
-        
         welcome_text = (
             "🎯 **無限抽自動化程式遠端控制**\n\n"
-            "📱 **可用功能：**\n"
-            "• 🎮 開始/暫停抽卡\n"
-            "• 📊 查看即時狀態\n"
-            "• 📈 查看抽卡統計\n"
-            "• 🌟 查看五星分布\n"
-            "• 📸 自動截圖通知\n\n"
+            f"{self.get_overview_text()}\n\n"
             "請選擇要執行的操作："
         )
-        
-        await update.message.reply_text(welcome_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
+        await update.message.reply_text(welcome_text, reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
 
     async def status_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        status_text = self.get_status_text()
-        keyboard = [
-            [
-                InlineKeyboardButton("🎮 開始抽卡", callback_data="start_draw") if not self.game_model.running 
-                else InlineKeyboardButton("⏸️ 暫停抽卡", callback_data="pause_draw")
-            ],
-            [InlineKeyboardButton("🔄 刷新狀態", callback_data="check_status")]
-        ]
-        await update.message.reply_text(status_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
+        await update.message.reply_text(self.get_overview_text(), reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
 
     async def stats_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        stats_text = self.get_stats_text()
-        keyboard = [[InlineKeyboardButton("🔄 刷新統計", callback_data="check_stats")]]
-        await update.message.reply_text(stats_text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
+        await update.message.reply_text(self.get_overview_text(), reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
 
     async def distribution_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
-        text = self.get_distribution_text()
-        keyboard = [[InlineKeyboardButton("🔄 刷新分布", callback_data="check_distribution")]]
-        await update.message.reply_text(text, reply_markup=InlineKeyboardMarkup(keyboard), parse_mode='Markdown')
+        await update.message.reply_text(self.get_overview_text(), reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
 
     async def button_callback(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         query = update.callback_query
         await query.answer()
         
-        if query.data == "start_draw":
-            if not self.game_model.running:
-                self.game_model.running = True
-                await query.edit_message_text(f"🎮 **抽卡已開始！**\n\n{self.get_status_text()}", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
-            else:
-                await query.edit_message_text("⚠️ 抽卡程式已在運行中！", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
-                
-        elif query.data == "pause_draw":
+        if query.data == "toggle_draw":
             if self.game_model.running:
                 self.game_model.running = False
-                await query.edit_message_text(f"⏸️ **抽卡已暫停！**\n\n{self.get_status_text()}", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                status_msg = "⏸️ **抽卡已暫停！**"
             else:
-                await query.edit_message_text("⚠️ 抽卡程式已暫停！", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                self.game_model.running = True
+                status_msg = "🎮 **抽卡已開始！**"
+            await query.edit_message_text(f"{status_msg}\n\n{self.get_overview_text()}", reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
         
-        elif query.data == "check_status":
-            await query.edit_message_text(self.get_status_text(), reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+        elif query.data == "check_overview":
+            await query.edit_message_text(self.get_overview_text(), reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
             
-        elif query.data == "check_stats":
-            await query.edit_message_text(self.get_stats_text(), reply_markup=self.get_stats_keyboard(), parse_mode='Markdown')
-            
-        elif query.data == "check_distribution":
-            await query.edit_message_text(self.get_distribution_text(), reply_markup=self.get_distribution_keyboard(), parse_mode='Markdown')
-            
+        elif query.data == "settings":
+            await query.edit_message_text(self.get_settings_text(), reply_markup=self.get_settings_keyboard(), parse_mode='Markdown')
+
+        elif query.data == "noop":
+            return
+
         elif query.data == "refresh":
-            await query.edit_message_text(f"🔄 **主選單**\n\n{self.get_status_text()}", reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
+            await query.edit_message_text(f"🔄 **主選單**\n\n{self.get_overview_text()}", reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
+
+        elif query.data.startswith("set_5star_"):
+            val = int(query.data.split("_")[-1])
+            new_val = max(0, self.game_model.min_5star + val)
+            self.game_model.set_thresholds(new_val, self.game_model.min_4star)
+            await query.edit_message_text(self.get_settings_text(), reply_markup=self.get_settings_keyboard(), parse_mode='Markdown')
+
+        elif query.data.startswith("set_4star_"):
+            val = int(query.data.split("_")[-1])
+            new_val = max(0, self.game_model.min_4star + val)
+            self.game_model.set_thresholds(self.game_model.min_5star, new_val)
+            await query.edit_message_text(self.get_settings_text(), reply_markup=self.get_settings_keyboard(), parse_mode='Markdown')
             
         elif query.data == "continue_draw":
             self.game_model.running = True
             try:
-                await query.edit_message_text("✅ **繼續抽卡！**\n\n已確認結果，繼續進行抽卡...", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                await query.edit_message_text("✅ **繼續抽卡！**\n\n已確認結果，繼續進行抽卡...", reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
                 self.last_notification_message_id = query.message.message_id
             except Exception:
-                msg = await self.bot.send_message(chat_id=self.chat_id, text="✅ **繼續抽卡！**\n\n已確認結果，繼續進行抽卡...", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                msg = await self.bot.send_message(chat_id=self.chat_id, text="✅ **繼續抽卡！**\n\n已確認結果，繼續進行抽卡...", reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
                 self.last_notification_message_id = msg.message_id
             
         elif query.data == "stop_draw":
             self.game_model.running = False
             try:
-                await query.edit_message_text("🛑 **停止抽卡！**\n\n已停止抽卡程式。", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                await query.edit_message_text("🛑 **停止抽卡！**\n\n已停止抽卡程式。", reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
                 self.last_notification_message_id = query.message.message_id
             except Exception:
-                msg = await self.bot.send_message(chat_id=self.chat_id, text="🛑 **停止抽卡！**\n\n已停止抽卡程式。", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                msg = await self.bot.send_message(chat_id=self.chat_id, text="🛑 **停止抽卡！**\n\n已停止抽卡程式。", reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
                 self.last_notification_message_id = msg.message_id
 
     # --- 輔助方法 (鍵盤與文字生成) ---
-    def get_control_keyboard(self):
-        keyboard = [
-            [InlineKeyboardButton("🎮 開始抽卡", callback_data="start_draw") if not self.game_model.running else InlineKeyboardButton("⏸️ 暫停抽卡", callback_data="pause_draw")],
-            [InlineKeyboardButton("📊 查看狀態", callback_data="check_status"), InlineKeyboardButton("📈 查看統計", callback_data="check_stats")],
-            [InlineKeyboardButton("🔄 返回主選單", callback_data="refresh")]
-        ]
-        return InlineKeyboardMarkup(keyboard)
-        
     def get_main_keyboard(self):
+        toggle_text = "⏸️ 暫停抽卡" if self.game_model.running else "🎮 開始抽卡"
         keyboard = [
-            [InlineKeyboardButton("🎮 開始抽卡", callback_data="start_draw"), InlineKeyboardButton("⏸️ 暫停抽卡", callback_data="pause_draw")],
-            [InlineKeyboardButton("📊 查看狀態", callback_data="check_status"), InlineKeyboardButton("📈 查看統計", callback_data="check_stats")],
-            [InlineKeyboardButton("🌟 五星分布", callback_data="check_distribution"), InlineKeyboardButton("🔄 刷新", callback_data="refresh")]
+            [InlineKeyboardButton(toggle_text, callback_data="toggle_draw"), InlineKeyboardButton("📊 統計總覽", callback_data="check_overview")],
+            [InlineKeyboardButton("⚙️ 設定門檻", callback_data="settings"), InlineKeyboardButton("🔄 刷新", callback_data="refresh")]
         ]
         web_ui = getattr(self.game_controller, 'web_ui', None)
         if web_ui:
@@ -219,52 +185,48 @@ class TelegramController:
                 url_row.append(InlineKeyboardButton("🌍 外網控制台", url=f"http://{web_ui.public_ip}:{web_ui.port}"))
             keyboard.append(url_row)
         return InlineKeyboardMarkup(keyboard)
-        
-    def get_stats_keyboard(self):
+
+    def get_settings_keyboard(self):
         keyboard = [
-            [InlineKeyboardButton("🌟 五星分布", callback_data="check_distribution"), InlineKeyboardButton("🔄 刷新統計", callback_data="check_stats")],
-            [InlineKeyboardButton("🔙 返回主選單", callback_data="refresh")]
-        ]
-        return InlineKeyboardMarkup(keyboard)
-        
-    def get_distribution_keyboard(self):
-        keyboard = [
-            [InlineKeyboardButton("📈 查看統計", callback_data="check_stats"), InlineKeyboardButton("🔄 刷新分布", callback_data="check_distribution")],
+            [InlineKeyboardButton("5⭐ ➖", callback_data="set_5star_-1"), InlineKeyboardButton(f"5星: {self.game_model.min_5star}", callback_data="noop"), InlineKeyboardButton("5⭐ ➕", callback_data="set_5star_1")],
+            [InlineKeyboardButton("4⭐ ➖", callback_data="set_4star_-1"), InlineKeyboardButton(f"4星: {self.game_model.min_4star}", callback_data="noop"), InlineKeyboardButton("4⭐ ➕", callback_data="set_4star_1")],
             [InlineKeyboardButton("🔙 返回主選單", callback_data="refresh")]
         ]
         return InlineKeyboardMarkup(keyboard)
         
     def get_success_keyboard(self):
         keyboard = [
-            [InlineKeyboardButton("✅ 繼續抽卡", callback_data="continue_draw"), InlineKeyboardButton("🛑 停止抽卡", callback_data="stop_draw")],
-            [InlineKeyboardButton("📊 查看狀態", callback_data="check_status")]
+            [InlineKeyboardButton("✅ 繼續抽卡", callback_data="continue_draw"), InlineKeyboardButton("🛑 停止抽卡", callback_data="stop_draw")]
         ]
         return InlineKeyboardMarkup(keyboard)
 
-    def get_status_text(self):
+    def get_overview_text(self):
         status = "🟢 運行中" if self.game_model.running else "🔴 已暫停"
-        text = f"📊 **程式狀態**\n\n🔹 **狀態：** {status}\n🔹 **總抽卡次數：** {self.game_model.draw_count} 次\n"
+        text = f"📊 **統計總覽**\n\n"
+        text += f"🔹 **狀態：** {status}\n"
         text += f"🔹 **星級門檻：** 5星 {self.game_model.min_5star}個, 4星 {self.game_model.min_4star}個\n"
-        text += f"🔹 **更新時間：** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+        text += f"🔹 **總抽卡次數：** {self.game_model.draw_count} 次\n"
+
+        if self.game_model.draw_count > 0:
+            stats = self.game_model.get_draw_statistics()
+            text += f"🔹 **平均5星：** {stats['avg_5star']:.2f}/次\n"
+            text += f"🔹 **平均4星：** {stats['avg_4star']:.2f}/次\n"
+            text += f"🔹 **成功次數：** {stats['success_draws']} 次 (成功率: {stats['success_rate']:.1f}%)\n"
+
+            dist = self.game_model.get_five_star_distribution()
+            if dist:
+                text += f"\n🌟 **五星分布：**\n"
+                for stars, count in sorted(dist.items()):
+                    text += f"  ⭐ {stars}個五星： {count} 次\n"
+
+        text += f"\n🕐 {datetime.now().strftime('%H:%M:%S')}"
         return text
 
-    def get_stats_text(self):
-        if self.game_model.draw_count == 0: return "📈 **抽卡統計**\n\n尚無抽卡紀錄"
-        stats = self.game_model.get_draw_statistics()
-        text = f"📈 **抽卡統計摘要**\n\n🔹 **總抽卡次數：** {stats['total_draws']} 次\n"
-        text += f"🔹 **總5星數量：** {stats['total_5star']} 個 (平均 {stats['avg_5star']:.2f}/次)\n"
-        text += f"🔹 **總4星數量：** {stats['total_4star']} 個 (平均 {stats['avg_4star']:.2f}/次)\n"
-        text += f"🔹 **成功次數：** {stats['success_draws']} 次\n🔹 **成功率：** {stats['success_rate']:.2f}%"
-        return text
-
-    def get_distribution_text(self):
-        if self.game_model.draw_count == 0: return "🌟 **五星分布統計**\n\n尚無抽卡紀錄"
-        dist = self.game_model.get_five_star_distribution()
-        text = "🌟 **五星分布統計**\n\n"
-        if not dist: text += "尚無五星紀錄"
-        else:
-            for stars, count in sorted(dist.items()):
-                text += f"⭐ **{stars}個五星：** {count} 次\n"
+    def get_settings_text(self):
+        text = f"⚙️ **門檻設定**\n\n"
+        text += f"⭐ **5星門檻：** {self.game_model.min_5star} 個\n"
+        text += f"⭐ **4星門檻：** {self.game_model.min_4star} 個\n\n"
+        text += "使用 ➖ ➕ 按鈕調整門檻："
         return text
 
     # --- 訊息發送邏輯 ---
