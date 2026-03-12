@@ -180,17 +180,21 @@ class TelegramController:
             
         elif query.data == "continue_draw":
             self.game_model.running = True
-            if self.last_notification_message_id:
-                try:
-                    await self.bot.delete_message(chat_id=self.chat_id, message_id=self.last_notification_message_id)
-                    self.last_notification_message_id = None
-                except Exception:
-                    pass
-            await self.bot.send_message(chat_id=self.chat_id, text="✅ **繼續抽卡！**\n\n已確認結果，繼續進行抽卡...", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+            try:
+                await query.edit_message_text("✅ **繼續抽卡！**\n\n已確認結果，繼續進行抽卡...", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                self.last_notification_message_id = query.message.message_id
+            except Exception:
+                msg = await self.bot.send_message(chat_id=self.chat_id, text="✅ **繼續抽卡！**\n\n已確認結果，繼續進行抽卡...", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                self.last_notification_message_id = msg.message_id
             
         elif query.data == "stop_draw":
             self.game_model.running = False
-            await query.edit_message_text("🛑 **停止抽卡！**\n\n已停止抽卡程式。", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+            try:
+                await query.edit_message_text("🛑 **停止抽卡！**\n\n已停止抽卡程式。", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                self.last_notification_message_id = query.message.message_id
+            except Exception:
+                msg = await self.bot.send_message(chat_id=self.chat_id, text="🛑 **停止抽卡！**\n\n已停止抽卡程式。", reply_markup=self.get_control_keyboard(), parse_mode='Markdown')
+                self.last_notification_message_id = msg.message_id
 
     # --- 輔助方法 (鍵盤與文字生成) ---
     def get_control_keyboard(self):
@@ -264,10 +268,26 @@ class TelegramController:
         return text
 
     # --- 訊息發送邏輯 ---
+    async def _delete_last_notification(self):
+        """刪除上一個互動對話框 (避免累積多個)"""
+        if self.last_notification_message_id:
+            try:
+                await self.bot.delete_message(chat_id=self.chat_id, message_id=self.last_notification_message_id)
+            except Exception:
+                pass
+            self.last_notification_message_id = None
+
     async def send_success_notification(self, screenshot, stars_5, stars_4, stars_3):
         """發送成功通知並附上截圖 (Async 內部方法)"""
         if not self.bot: return
         try:
+            # 先刪除舊的互動對話框，避免越來越多
+            await self._delete_last_notification()
+
+            # 先發送截圖 (這樣圖片在上面)
+            await self.send_screenshot_with_retry(screenshot, max_retries=3)
+
+            # 再發送互動對話框 (確保在最底部)
             msg_text = (
                 f"🎉 **達到星級門檻！**\n\n⭐ **結果：**\n• 5星：{stars_5} 個\n• 4星：{stars_4} 個\n• 3星：{stars_3} 個\n\n"
                 f"🎯 **目標門檻：** 5星 {self.game_model.min_5star}個, 4星 {self.game_model.min_4star}個\n"
@@ -277,12 +297,11 @@ class TelegramController:
             message = await self.bot.send_message(chat_id=self.chat_id, text=msg_text, reply_markup=self.get_success_keyboard(), parse_mode='Markdown')
             self.last_notification_message_id = message.message_id
             
-            await self.send_screenshot_with_retry(screenshot, max_retries=3)
-            
         except Exception as e:
             print(f"發送 Telegram 通知時發生錯誤: {e}")
             try:
-                await self.bot.send_message(chat_id=self.chat_id, text=f"🎉 達到目標！5星:{stars_5} 4星:{stars_4} 3星:{stars_3}", reply_markup=self.get_success_keyboard())
+                msg = await self.bot.send_message(chat_id=self.chat_id, text=f"🎉 達到目標！5星:{stars_5} 4星:{stars_4} 3星:{stars_3}", reply_markup=self.get_success_keyboard())
+                self.last_notification_message_id = msg.message_id
             except: pass
 
     def screenshot_to_bytes(self, screenshot, quality=85, max_size=(1280, 720)):
