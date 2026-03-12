@@ -207,6 +207,13 @@ class TelegramController:
             [InlineKeyboardButton("📊 查看狀態", callback_data="check_status"), InlineKeyboardButton("📈 查看統計", callback_data="check_stats")],
             [InlineKeyboardButton("🌟 五星分布", callback_data="check_distribution"), InlineKeyboardButton("🔄 刷新", callback_data="refresh")]
         ]
+        web_ui = getattr(self.game_controller, 'web_ui', None)
+        if web_ui:
+            url_row = []
+            url_row.append(InlineKeyboardButton("🏠 內網控制台", url=f"http://{web_ui.local_ip}:{web_ui.port}"))
+            if web_ui.public_ip and web_ui.public_ip != "無法獲取":
+                url_row.append(InlineKeyboardButton("🌍 外網控制台", url=f"http://{web_ui.public_ip}:{web_ui.port}"))
+            keyboard.append(url_row)
         return InlineKeyboardMarkup(keyboard)
         
     def get_stats_keyboard(self):
