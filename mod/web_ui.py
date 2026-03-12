@@ -5,14 +5,12 @@ import logging
 import socket
 import secrets
 import requests
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse, Response
+from fastapi import FastAPI, Request, Form
+from fastapi.responses import JSONResponse, Response, HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from starlette.middleware.base import BaseHTTPMiddleware
-from starlette.responses import Response as StarletteResponse
 import uvicorn
-import base64
 
 # 定義資料模型
 class ConfigPayload(BaseModel):
@@ -26,63 +24,77 @@ class TelegramPayload(BaseModel):
     token: str
     chat_id: str
 
-class BasicAuthMiddleware(BaseHTTPMiddleware):
-    MAX_FAILURES = 3
-    BAN_SECONDS = 3600
+LOGIN_PAGE_HTML = """<!DOCTYPE html>
+<html lang="zh-TW"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>登入 - Gacha Control Panel</title>
+<style>
+body{background:#121212;color:#e0e0e0;font-family:'Segoe UI',sans-serif;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
+.login-box{background:#1e1e1e;border:1px solid #333;border-radius:12px;padding:40px 30px;width:320px;text-align:center;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
+h2{margin:0 0 8px;font-size:1.4rem}
+.subtitle{color:#888;font-size:0.85rem;margin-bottom:24px}
+input[type=password]{width:100%;padding:12px;background:#2c2c2c;border:1px solid #444;border-radius:8px;color:#fff;font-size:1rem;box-sizing:border-box;margin-bottom:16px}
+input[type=password]:focus{outline:none;border-color:#0d6efd}
+button{width:100%;padding:12px;background:#0d6efd;color:#fff;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;transition:background .2s}
+button:hover{background:#0b5ed7}
+.error{color:#dc3545;font-size:0.85rem;margin-bottom:12px}
+.lock-msg{color:#dc3545;font-size:0.9rem;margin-top:12px}
+</style></head><body>
+<div class="login-box">
+<h2>🔒 控制台登入</h2>
+<p class="subtitle">Gacha Automation Panel</p>
+{error}
+<form method="POST" action="/login">
+<input type="password" name="password" placeholder="請輸入密碼" autofocus required>
+<button type="submit">登入</button>
+</form>
+{lock_msg}
+</div></body></html>"""
 
-    def __init__(self, app, password: str):
+MAX_FAILURES = 3
+BAN_SECONDS = 3600
+
+def get_client_ip(request: Request) -> str:
+    forwarded = request.headers.get("X-Forwarded-For")
+    if forwarded:
+        return forwarded.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+def is_ip_banned(auth_state: dict, ip: str) -> bool:
+    until = auth_state["ban_until"].get(ip, 0)
+    if until and time.time() < until:
+        return True
+    if until and time.time() >= until:
+        auth_state["ban_until"].pop(ip, None)
+        auth_state["fail_count"].pop(ip, None)
+    return False
+
+def update_ban_state(auth_state: dict, ip: str):
+    auth_state["fail_count"][ip] = auth_state["fail_count"].get(ip, 0) + 1
+    if auth_state["fail_count"][ip] >= MAX_FAILURES:
+        auth_state["ban_until"][ip] = time.time() + BAN_SECONDS
+
+class AuthMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app, password: str, session_tokens: set, auth_state: dict):
         super().__init__(app)
         self.password = password
-        self._fail_count: dict[str, int] = {}
-        self._ban_until: dict[str, float] = {}
-
-    def _client_ip(self, request: Request) -> str:
-        forwarded = request.headers.get("X-Forwarded-For")
-        if forwarded:
-            return forwarded.split(",")[0].strip()
-        return request.client.host if request.client else "unknown"
-
-    def _is_banned(self, ip: str) -> bool:
-        until = self._ban_until.get(ip, 0)
-        if until and time.time() < until:
-            return True
-        if until and time.time() >= until:
-            self._ban_until.pop(ip, None)
-            self._fail_count.pop(ip, None)
-        return False
+        self.session_tokens = session_tokens
+        self.auth_state = auth_state
 
     async def dispatch(self, request: Request, call_next):
-        ip = self._client_ip(request)
-        if self._is_banned(ip):
-            remaining = int(self._ban_until[ip] - time.time())
-            return StarletteResponse(
-                content=f"IP 已被封鎖，請在 {remaining // 60} 分鐘後重試", status_code=403
-            )
+        if request.url.path == "/login":
+            return await call_next(request)
 
-        auth = request.headers.get("Authorization")
-        if auth:
-            try:
-                scheme, credentials = auth.split(" ", 1)
-                if scheme.lower() == "basic":
-                    decoded = base64.b64decode(credentials).decode("utf-8")
-                    _, req_pass = decoded.split(":", 1)
-                    if secrets.compare_digest(req_pass, self.password):
-                        self._fail_count.pop(ip, None)
-                        return await call_next(request)
-            except Exception:
-                pass
-            self._fail_count[ip] = self._fail_count.get(ip, 0) + 1
-            if self._fail_count[ip] >= self.MAX_FAILURES:
-                self._ban_until[ip] = time.time() + self.BAN_SECONDS
-                logging.warning(f"Web UI: IP {ip} 連續驗證失敗 {self.MAX_FAILURES} 次，封鎖 1 小時")
-                return StarletteResponse(
-                    content="密碼錯誤次數過多，IP 已被封鎖 1 小時", status_code=403
-                )
+        ip = get_client_ip(request)
+        if is_ip_banned(self.auth_state, ip):
+            remaining = int(self.auth_state["ban_until"][ip] - time.time())
+            lock_msg = f'<p class="lock-msg">⛔ IP 已被封鎖，請在 {remaining // 60} 分鐘後重試</p>'
+            return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
 
-        return StarletteResponse(
-            content="Unauthorized", status_code=401,
-            headers={"WWW-Authenticate": 'Basic realm="Gacha Control Panel"'}
-        )
+        token = request.cookies.get("session_token")
+        if token and token in self.session_tokens:
+            return await call_next(request)
+
+        return RedirectResponse(url="/login", status_code=302)
 
 class WebController:
     def __init__(self, model, controller):
@@ -95,11 +107,15 @@ class WebController:
         self.local_ip = self.get_local_ip()
         self.public_ip = self.get_public_ip()
 
-        # Basic Auth (密碼驗證 + IP 封鎖)
+        # Cookie 驗證 (密碼 + IP 封鎖)
         self.auth_pass = self.model.config.get('WebUI', 'password', fallback='admin')
-        self.app.add_middleware(BasicAuthMiddleware, password=self.auth_pass)
+        self.session_tokens: set[str] = set()
+        self.auth_state = {"fail_count": {}, "ban_until": {}}
+        self.app.add_middleware(AuthMiddleware, password=self.auth_pass, session_tokens=self.session_tokens, auth_state=self.auth_state)
 
         # === 註冊路由 ===
+        self.app.get("/login")(self.login_page)
+        self.app.post("/login")(self.login_submit)
         self.app.get("/")(self.index)
         
         # [關鍵修正] 改用 snapshot API，移除 video_feed
@@ -144,6 +160,39 @@ class WebController:
             logging.error(f"Web Server 啟動失敗: {e}")
 
     # === 路由實作 ===
+
+    async def login_page(self, request: Request):
+        ip = get_client_ip(request)
+        if is_ip_banned(self.auth_state, ip):
+            remaining = int(self.auth_state["ban_until"][ip] - time.time())
+            lock_msg = f'<p class="lock-msg">⛔ IP 已被封鎖，請在 {remaining // 60} 分鐘後重試</p>'
+            return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
+        return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=""))
+
+    async def login_submit(self, request: Request, password: str = Form(...)):
+        ip = get_client_ip(request)
+        if is_ip_banned(self.auth_state, ip):
+            remaining = int(self.auth_state["ban_until"][ip] - time.time())
+            lock_msg = f'<p class="lock-msg">⛔ IP 已被封鎖，請在 {remaining // 60} 分鐘後重試</p>'
+            return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
+
+        if secrets.compare_digest(password, self.auth_pass):
+            token = secrets.token_hex(32)
+            self.session_tokens.add(token)
+            self.auth_state["fail_count"].pop(ip, None)
+            response = RedirectResponse(url="/", status_code=302)
+            response.set_cookie("session_token", token, httponly=True, max_age=86400)
+            logging.info(f"Web UI: IP {ip} 登入成功")
+            return response
+
+        self.auth_state["fail_count"][ip] = self.auth_state["fail_count"].get(ip, 0) + 1
+        if self.auth_state["fail_count"][ip] >= MAX_FAILURES:
+            self.auth_state["ban_until"][ip] = time.time() + BAN_SECONDS
+            logging.warning(f"Web UI: IP {ip} 連續驗證失敗 {MAX_FAILURES} 次，封鎖 1 小時")
+            lock_msg = '<p class="lock-msg">⛔ 密碼錯誤次數過多，IP 已被封鎖 1 小時</p>'
+            return HTMLResponse(LOGIN_PAGE_HTML.format(error="", lock_msg=lock_msg), status_code=403)
+        error_html = '<p class="error">❌ 密碼錯誤，請重試</p>'
+        return HTMLResponse(LOGIN_PAGE_HTML.format(error=error_html, lock_msg=""), status_code=401)
 
     async def index(self, request: Request):
         return self.templates.TemplateResponse("index.html", {
