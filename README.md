@@ -85,7 +85,6 @@ adb_path =               # ADB 路徑 (留空 = 自動偵測，找不到則用 W
 [Thresholds]
 min_5star = 1            # 5星達標門檻
 min_4star = 0            # 4星達標門檻
-min_score = 0            # 分數達標門檻
 
 [System]
 monitor_index = 1        # 截圖用螢幕編號

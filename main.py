@@ -147,6 +147,9 @@ class GameModel:
 
         except Exception as e:
             logging.error(f"讀取設定檔發生嚴重錯誤: {e}")
+            self.min_5star = 1
+            self.min_4star = 0
+            self.monitor_index = 1
 
     def cleanup_screenshots(self):
         """清理舊截圖"""
@@ -368,6 +371,9 @@ class GameController:
 
     def reload_telegram_bot(self):
         logging.info("正在重啟 Telegram Bot...")
+        if self.telegram_bot:
+            self.telegram_bot.stop_bot_sync()
+            time.sleep(1)
         self.telegram_bot = None 
         self.telegram_token = self.model.config.get('Telegram', 'token', fallback="")
         self.telegram_chat_id = self.model.config.get('Telegram', 'chat_id', fallback="")
@@ -489,6 +495,10 @@ class GameController:
             if self.model.running:
                 try:
                     screenshot = self.model.take_screenshot()
+                    if screenshot is None:
+                        logging.warning("截圖失敗，跳過本次循環")
+                        time.sleep(1)
+                        continue
                     
                     img1_ok = self.model.image_processor.find_image(self.model.image1, screenshot)
                     img2_ok = self.model.image_processor.find_image(self.model.image2, screenshot)

@@ -1,2 +1,5 @@
 # Ignore backup folder
 .git_backups/
+
+# 本機設定檔 (含敏感憑證)
+config.ini

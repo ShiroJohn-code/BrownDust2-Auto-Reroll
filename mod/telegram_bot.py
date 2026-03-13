@@ -153,13 +153,7 @@ class TelegramController:
             await query.edit_message_text(self.get_settings_text(), reply_markup=self.get_settings_keyboard(), parse_mode='Markdown')
             
         elif query.data == "reset_data":
-            self.game_model.draw_count = 0
-            self.game_model.draw_records.clear()
-            try:
-                with open(self.game_model.log_file, "w", encoding="utf-8") as f:
-                    f.write("=== 抽卡紀錄 ===\n\n")
-            except Exception:
-                pass
+            self.game_model.reset_statistics()
             await query.edit_message_text("✅ **數據已重置！**\n\n抽卡紀錄已清除，從 0 開始重新計算。", reply_markup=self.get_settings_keyboard(), parse_mode='Markdown')
 
         elif query.data == "continue_draw":

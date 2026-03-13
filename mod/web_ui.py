@@ -68,11 +68,6 @@ def is_ip_banned(auth_state: dict, ip: str) -> bool:
         auth_state["fail_count"].pop(ip, None)
     return False
 
-def update_ban_state(auth_state: dict, ip: str):
-    auth_state["fail_count"][ip] = auth_state["fail_count"].get(ip, 0) + 1
-    if auth_state["fail_count"][ip] >= MAX_FAILURES:
-        auth_state["ban_until"][ip] = time.time() + BAN_SECONDS
-
 class AuthMiddleware:
     def __init__(self, app, password: str, session_tokens: set, auth_state: dict):
         self.app = app
