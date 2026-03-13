@@ -33,10 +33,6 @@ class GameModel:
         self.script_dir = Path(os.path.dirname(os.path.abspath(__file__)))
         self.image_dir = self.script_dir / 'mouse'
         
-        # [AI 訓練用] 資料集路徑
-        self.dataset_dir = self.script_dir / 'dataset' / 'images'
-        self.collect_data = False  # 資料收集模式開關
-        
         # 路徑設定
         self.image_dir_win = self.image_dir / 'windows'
         self.image_dir_emu = self.image_dir / 'emulator'
@@ -303,23 +299,6 @@ class GameModel:
         for s, c in sorted(dist.items()): summary += f"5星 x{s}: {c}次\n"
         return summary
     
-    def save_training_data(self, screenshot):
-        if not self.collect_data: return
-        try:
-            if not self.dataset_dir.exists():
-                self.dataset_dir.mkdir(parents=True, exist_ok=True)
-            
-            filename = f"train_{int(time.time() * 1000)}.png"
-            filepath = self.dataset_dir / filename
-            
-            # 使用 imencode 解決中文路徑問題
-            result, img_encode = cv2.imencode('.png', screenshot)
-            if result:
-                img_encode.tofile(str(filepath))
-                logging.info(f"[AI收集] 已儲存截圖: {filename}")
-        except Exception as e:
-            logging.error(f"儲存訓練資料失敗: {e}")
-
 class GameController:
     def __init__(self, model):
         self.model = model
@@ -360,7 +339,7 @@ class GameController:
         if self.telegram_bot:
             self.telegram_bot.send_startup_menu_sync()
 
-        self.view.show_message("程式已就緒! 按 F5 開始/暫停, F8 切換資料收集")
+        self.view.show_message("程式已就緒! 按 F5 開始/暫停, F12 顯示抽卡統計")
         logging.info(f"當前門檻: 5星>={self.model.min_5star}, 4星>={self.model.min_4star}")
         
         threading.Thread(target=self.auto_click_process, daemon=True).start()
@@ -481,19 +460,11 @@ class GameController:
         keyboard.add_hotkey('f12', lambda: self.view.show_message(self.model.show_draw_summary()))
         keyboard.add_hotkey('f10', lambda: self.view.show_message(self.model.show_five_star_distribution()))
         keyboard.add_hotkey('f9', self.detect_current_screen)
-        keyboard.add_hotkey('f8', self.toggle_data_collection)
         
     def toggle_program(self):
         self.model.running = not self.model.running
         status = "啟動" if self.model.running else "暫停"
         self.view.show_message(f"=== 自動抽卡已{status} ===")
-
-    def toggle_data_collection(self):
-        self.model.collect_data = not self.model.collect_data
-        status = "開啟" if self.model.collect_data else "關閉"
-        self.view.show_message(f"📁 [AI收集] 資料收集模式已{status}")
-        if self.model.collect_data:
-            self.view.show_message("   -> 抽卡時將自動儲存截圖至 dataset/images")
 
     def detect_current_screen(self):
         try:
@@ -526,9 +497,6 @@ class GameController:
                         self.click_position(self.model.position_b)
                         time.sleep(0.5)
                     elif img1_ok:
-                        if self.model.collect_data:
-                            self.model.save_training_data(screenshot)
-
                         s5, s4, regions = self.model.image_processor.analyze_stars(screenshot)
                         s3 = max(0, 10 - s5 - s4)
                         success = self.model.meets_threshold(s5, s4)

@@ -1,130 +1,144 @@
 # 🎮 無限抽自動化程式 (Infinite Gacha Automation)
 
-這是一個基於 Python 開發的高效能自動抽卡輔助工具。採用 **MVC 架構** 設計，整合了 **FastAPI Web 控制台**、**Telegram 遠端通知** 以及 **ADB 極速通訊** 技術。
+基於 Python 開發的高效能自動抽卡輔助工具，採用 **MVC 架構**，整合 **FastAPI Web 控制台**、**Telegram 遠端互動控制** 以及 **ADB 極速通訊**。
+
+支援三種操作模式：**純本機熱鍵**、**Web 網頁控制台**、**Telegram Bot 遠端操控**，可自由組合。
 
 ---
 
-## ✨ 主要功能 (Features)
+## ✨ 主要功能
 
-* **雙模式支援**：
-* 🖥️ **Windows 桌面模式**：使用 `mss` 進行毫秒級極速截圖，`ctypes` 底層驅動滑鼠。
-* 📱 **模擬器模式 (LDPlayer)**：使用 `pure-python-adb` 透過 Socket 直接通訊，擺脫傳統 ADB 指令的延遲。
+### 🖥️ 雙平台自動化
+- **Windows 桌面模式** — `mss` 毫秒級截圖 + `ctypes` 底層滑鼠驅動
+- **模擬器模式 (LDPlayer)** — `pure-python-adb` Socket 直連，自動偵測模擬器進程與 ADB 路徑
 
+### 📱 Telegram Bot 遠端控制
+- **一鍵開始/暫停** — 自動判斷狀態的切換按鈕
+- **📊 統計總覽** — 運行狀態、抽卡統計、五星分布一頁看完
+- **⚙️ 門檻設定** — 直接用 ➕➖ 按鈕即時調整 5星/4星門檻
+- **🗑️ 重置數據** — 一鍵清除所有抽卡紀錄，從零開始
+- **達標通知** — 自動截圖 + 互動式繼續/停止按鈕，永遠只保留最新一個對話框
+- **Web UI 快捷連結** — 自動判斷 WebUI 是否啟用，動態顯示內網/外網按鈕
 
-* **Web 控制台 (Dashboard)**：
-* 即時監控畫面 (MJPEG Stream)。
-* 動態調整抽卡門檻 (5星數量、分數)。
-* 支援內網/外網連線資訊顯示。
+### 🌐 Web 控制台
+- 即時監控畫面 (MJPEG Stream)
+- 動態調整抽卡門檻
+- 密碼保護登入 + IP 封鎖機制 (3 次錯誤鎖定 1 小時)
+- 可透過 `config.ini` 開關及自訂連接埠
 
-
-* **智慧通知**：
-* Telegram Bot 整合，達標自動截圖發送通知。
-* 提供 Web UI 快速連線連結。
-
-
-* **穩定健壯**：
-* **智慧啟動器 (`Run.py`)**：自動修復依賴、獲取管理員權限、攔截崩潰錯誤。
-* **日誌管理**：自動輪替 (Log Rotation) 與雜訊過濾，避免硬碟塞滿。
-* **執行緒安全**：修正了 `mss` 與 `httpx` 在多執行緒下的衝突問題。
-
-
+### 🛡️ 穩定健壯
+- **智慧啟動器 (`Run.py`)** — 自動安裝依賴、取得管理員權限、攔截崩潰錯誤
+- **日誌管理** — 自動輪替 (2MB/檔, 保留 5 份)，過濾網路庫雜訊
+- **執行緒安全** — `mss` 獨立實例 + `frame_lock` 防止畫面撕裂
 
 ---
 
-## 🏗️ 專案架構 (Architecture)
-
-本專案嚴格遵循 **MVC (Model-View-Controller)** 設計模式，確保代碼低耦合、易維護。
-
-### 📂 檔案結構導覽
+## 📂 專案架構
 
 ```text
 無限抽_2K/
-├── Run.py                  # 🚀 智慧啟動器 (入口點，負責環境建置與錯誤攔截)
-├── main.py                 # 🧠 核心主程式 (MVC 組裝與主迴圈)
-├── config.ini              # ⚙️ 設定檔 (由程式自動生成與維護)
-├── requirements.txt        # 📦 依賴套件清單
+├── Run.py                    # 🚀 智慧啟動器 (入口點)
+├── main.py                   # 🧠 核心主程式 (MVC 架構)
+├── config.ini                # ⚙️ 設定檔
+├── requirements.txt          # 📦 依賴套件清單
 │
-├── mod/                    # 🔧 功能模組庫
-│   ├── image_processor.py  # [視覺] OpenCV 圖像處理、星星分析 (邏輯剝離)
-│   ├── input_handler.py    # [輸入] 滑鼠/觸控操作封裝 (Windows API / ADB Tap)
-│   ├── ld_controller.py    # [通訊] ADB Socket 通訊層 (取代 subprocess)
-│   ├── web_ui.py           # [介面] FastAPI 伺服器與串流處理
-│   ├── telegram_bot.py     # [通知] Telegram Bot 控制器
-│   └── character_detector.py # [辨識] 角色特徵比對邏輯
+├── mod/                      # 🔧 功能模組
+│   ├── image_processor.py    #    OpenCV 圖像處理、星級分析
+│   ├── input_handler.py      #    滑鼠/觸控操作封裝
+│   ├── ld_controller.py      #    ADB Socket 通訊層
+│   ├── web_ui.py             #    FastAPI Web 控制台 + 認證
+│   ├── telegram_bot.py       #    Telegram Bot 互動控制器
+│   └── character_detector.py #    角色特徵比對辨識
 │
-├── templates/              # 🎨 Web 前端模板 (Bootstrap 5)
+├── templates/                # 🎨 Web 前端 (Bootstrap 5)
 │   └── index.html
-├── logs/                   # 📝 系統日誌 (自動輪替)
-└── mouse/                  # 🖼️ 辨識用圖片資源
-
+├── logs/                     # 📝 系統日誌
+└── mouse/                    # 🖼️ 辨識用圖片資源
 ```
 
 ---
 
-## 🚀 快速開始 (Getting Started)
+## 🚀 快速開始
 
-### 1. 環境準備
+### 環境需求
 
-本程式專為 **Windows 10/11** 設計，建議使用 **Python 3.10+**。
+- **Windows 10/11**
+- **Python 3.10+**
 
-### 2. 啟動方式
+### 啟動
 
-無需手動輸入指令，直接執行 **`Run.py`** 即可：
+直接雙擊 **`Run.py`** 即可，程式會自動：
+1. 檢查並安裝缺少的套件
+2. 請求系統管理員權限
+3. 啟動自動化程式
 
-1. 雙擊 `Run.py`。
-2. 程式會自動檢查並安裝缺少的套件 (`pip install -r requirements.txt`)。
-3. 自動請求「系統管理員權限」以控制滑鼠。
-4. 啟動成功後，瀏覽器輸入控制台網址（如 `http://localhost:8964`）。
+### ⚙️ 設定檔 (`config.ini`)
 
-### 3. 操作熱鍵
+```ini
+[Telegram]
+token =                  # Telegram Bot Token (留空 = 不啟用)
+chat_id =                # Telegram Chat ID
 
-* `F5`: **啟動 / 暫停** 自動掛機。
-* `F9`: **單次測試截圖** (Debug 用，結果存於 `screenshots/`)。
-* `F10`: 顯示 5 星分布統計。
-* `F12`: 顯示抽卡統計摘要。
+[Emulator]
+adb_path =               # ADB 路徑 (留空 = 自動偵測，找不到則用 Windows 模式)
+
+[Thresholds]
+min_5star = 1            # 5星達標門檻
+min_4star = 0            # 4星達標門檻
+min_score = 0            # 分數達標門檻
+
+[System]
+monitor_index = 1        # 截圖用螢幕編號
+
+[WebUI]
+enabled = true           # Web 控制台開關 (true/false)
+port = 8964              # Web 控制台連接埠
+password = admin         # Web 控制台登入密碼
+```
+
+### 操作模式
+
+| 設定 | 行為 |
+|------|------|
+| Telegram ✅ WebUI ✅ | 完整功能：遠端 Bot + 網頁控制台 + 熱鍵 |
+| Telegram ✅ WebUI ❌ | 純 Bot 遠端控制 + 熱鍵 (不含內外網按鈕) |
+| Telegram ❌ WebUI ✅ | 網頁控制台 + 熱鍵 |
+| Telegram ❌ WebUI ❌ | 純本機熱鍵操作 |
+
+### ⌨️ 熱鍵
+
+| 按鍵 | 功能 |
+|------|------|
+| `F5` | 啟動 / 暫停自動抽卡 |
+| `F9` | 單次截圖分析 (Debug) |
+| `F10` | 顯示五星分布統計 |
+| `F12` | 顯示抽卡統計摘要 |
 
 ---
 
-## 🛠️ 開發者指南 (For Developers)
+## 🛠️ 技術細節
 
-### 關鍵實作細節
-
-1. **截圖效能優化 (`mss`)**：
-* 在 Windows 模式下，我們使用 `mss` 取代 `pyautogui`。
-* ⚠️ **注意**：`mss` 在多執行緒環境下非執行緒安全。在 `main.py` 的 `take_screenshot` 中，我們採用 `with mss.mss() as sct:` 的方式，確保每次截圖都建立獨立實例，防止崩潰。
-
-
-2. **ADB 通訊優化 (`mod/ld_controller.py`)**：
-* 棄用了 `subprocess.run("adb shell ...")` 的慢速方法。
-* 改用 `ppadb (pure-python-adb)` 建立 Socket 長連線 (Port 5037)，實現毫秒級截圖與點擊。
-
-
-3. **日誌系統 (`setup_logging`)**：
-* 使用了 `RotatingFileHandler`，單檔限制 2MB，保留 5 份。
-* 強制過濾了 `httpx`, `httpcore` 等網路庫的 INFO 等級日誌，避免 Telegram 輪詢訊息洗版。
-
-
-4. **Web 與主程互動**：
-* Web UI 運行於獨立執行緒 (`uvicorn`)。
-* 利用 `GameModel` 作為共享狀態，並透過 `frame_lock` 保護圖片讀寫，防止 Race Condition 導致的畫面撕裂或黑畫面。
-
-
+1. **截圖效能** — Windows 模式使用 `mss`，每次截圖建立獨立實例確保執行緒安全
+2. **ADB 通訊** — 透過 `pure-python-adb` Socket 長連線 (Port 5037) 取代 `subprocess` 指令，毫秒級響應
+3. **Web 認證** — 純 ASGI 中間件 + Cookie Session + IP 封鎖，不依賴 `BaseHTTPMiddleware` 避免 Request Body 消耗問題
+4. **Telegram 訊息管理** — 追蹤 `last_notification_message_id`，新通知前自動刪除舊對話框，先發圖再發按鈕確保互動框在最底部
 
 ---
 
-## 📅 版本紀錄 (Changelog)
+## 📅 版本紀錄
 
-### v1.0.0 (Current)
+### v2.0.0 (Current)
+- ✅ Telegram 互動選單大改版：開始/暫停合併、統計總覽、門檻設定 (+/-)、重置數據
+- ✅ Web 控制台可開關 + 自訂連接埠
+- ✅ 密碼登入頁面 + IP 封鎖機制
+- ✅ 達標通知只保留最新一個互動對話框
+- ✅ 智慧平台判斷：自動偵測模擬器進程與 ADB 路徑
 
-* ✅ 完成 MVC 架構重構。
-* ✅ 實作 Web 控制台與 Telegram 雙向通知。
-* ✅ 導入 `mss` 與 `ppadb` 進行效能優化。
-* ✅ 加入 `Run.py` 智慧啟動與錯誤攔截機制。
-
-### v2.0.0 (Planned)
-
-* 🔄 **OCR 升級**：導入 AI 文字辨識，移除對圖片模板的依賴。
-* 📦 **封裝發布**：使用 PyInstaller 打包為單一執行檔 (.exe)。
+### v1.0.0
+- ✅ MVC 架構重構
+- ✅ Web 控制台與 Telegram 通知
+- ✅ `mss` + `ppadb` 效能優化
+- ✅ `Run.py` 智慧啟動器
 
 ---
 
