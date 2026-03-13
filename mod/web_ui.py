@@ -129,7 +129,7 @@ class WebController:
         self.app = FastAPI()
         self.templates = Jinja2Templates(directory="templates")
         
-        self.port = 8964
+        self.port = self.model.config.getint('WebUI', 'port', fallback=8964)
         self.local_ip = self.get_local_ip()
         self.public_ip = self.get_public_ip()
 

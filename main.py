@@ -347,12 +347,18 @@ class GameController:
         self.register_hotkeys()
         self.init_telegram_bot()
 
-        try:
-            self.web_ui = WebController(self.model, self)
-            self.web_ui.start()
-            if self.telegram_bot:
-                self.telegram_bot.send_startup_menu_sync()
-        except Exception as e: logging.error(f"Web UI 啟動失敗: {e}")
+        webui_enabled = self.model.config.get('WebUI', 'enabled', fallback='true').lower() == 'true'
+        if webui_enabled:
+            try:
+                self.web_ui = WebController(self.model, self)
+                self.web_ui.start()
+            except Exception as e: logging.error(f"Web UI 啟動失敗: {e}")
+        else:
+            self.web_ui = None
+            logging.info("Web UI 已停用 (config.ini [WebUI] enabled = false)")
+
+        if self.telegram_bot:
+            self.telegram_bot.send_startup_menu_sync()
 
         self.view.show_message("程式已就緒! 按 F5 開始/暫停, F8 切換資料收集")
         logging.info(f"當前門檻: 5星>={self.model.min_5star}, 4星>={self.model.min_4star}")
@@ -370,7 +376,7 @@ class GameController:
 
     def init_telegram_bot(self):
         if not self.telegram_token or not self.telegram_chat_id:
-            logging.info("未偵測到 Telegram 設定，使用純網頁模式")
+            logging.info("未偵測到 Telegram 設定，使用本機模式 (F5 啟動/暫停)")
             self.telegram_bot = None
             return
         try:
