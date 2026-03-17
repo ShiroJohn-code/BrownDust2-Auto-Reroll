@@ -1,5 +1,24 @@
-# Ignore backup folder
-.git_backups/
-
 # 本機設定檔 (含敏感憑證)
 config.ini
+
+# 個人資料
+draw_records.txt
+logs/
+screenshots/
+get/
+分析結果/
+
+# Python 快取
+__pycache__/
+*.pyc
+
+# 開發用
+Test/
+AGENTS.md
+CODE_HEALTH_REPORT.md
+
+# 備份
+.git_backups/
+
+# Claude Code
+.claude/
