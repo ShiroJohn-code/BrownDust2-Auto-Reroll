@@ -17,9 +17,6 @@ class ConfigPayload(BaseModel):
     min_5star: int
     min_4star: int
 
-class SystemPayload(BaseModel):
-    monitor_index: int
-
 class TelegramPayload(BaseModel):
     token: str
     chat_id: str
@@ -145,8 +142,7 @@ class WebController:
         # 其他 API
         self.app.get("/api/stats")(self.get_stats)          
         self.app.post("/api/toggle")(self.toggle_running)   
-        self.app.post("/api/config")(self.update_config)    
-        self.app.post("/api/system")(self.update_system)    
+        self.app.post("/api/config")(self.update_config)
         self.app.post("/api/telegram")(self.update_telegram)
         self.app.post("/api/reset")(self.reset_stats)
 
@@ -267,7 +263,6 @@ class WebController:
                 "min_4star": self.model.min_4star,
                 "tg_token": (tg_token[:6] + "***") if len(tg_token) > 6 else "未設定",
                 "tg_chat_id": tg_chat_id,
-                "monitor_index": self.model.monitor_index
             },
             "system_info": {
                 "local_ip": f"{self.local_ip}:{self.port}",
@@ -286,10 +281,6 @@ class WebController:
 
     async def update_config(self, payload: ConfigPayload):
         self.model.set_thresholds(payload.min_5star, payload.min_4star)
-        return JSONResponse({"status": "ok"})
-
-    async def update_system(self, payload: SystemPayload):
-        self.model.set_system_config(payload.monitor_index)
         return JSONResponse({"status": "ok"})
 
     async def update_telegram(self, payload: TelegramPayload):

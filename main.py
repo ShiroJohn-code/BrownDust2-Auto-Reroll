@@ -128,7 +128,6 @@ class GameModel:
         
         defaults = {
             'Thresholds': {'min_5star': '1', 'min_4star': '0'},
-            'System': {'monitor_index': '1'}
         }
 
         try:
@@ -145,24 +144,20 @@ class GameModel:
             try:
                 self.min_5star = self.config.getint('Thresholds', 'min_5star')
                 self.min_4star = self.config.getint('Thresholds', 'min_4star')
-                self.monitor_index = self.config.getint('System', 'monitor_index')
                 self.start_hotkey = self.config.get('System', 'start_hotkey', fallback='f6').lower()
                 self.window_title  = self.config.get('Game', 'window_title', fallback='BrownDust II')
             except (ValueError, configparser.Error) as e:
                 logging.error(f"設定檔異常 ({e})，使用預設值")
                 self.min_5star = 1
                 self.min_4star = 0
-                self.monitor_index = 1
                 self.start_hotkey = 'f6'
                 self.window_title  = 'BrownDust II'
                 self.set_thresholds(1, 0)
-                self.set_system_config(1)
 
         except Exception as e:
             logging.error(f"讀取設定檔發生嚴重錯誤: {e}")
             self.min_5star = 1
             self.min_4star = 0
-            self.monitor_index = 1
             self.start_hotkey = 'f6'
             self.window_title  = 'BrownDust II'
 
@@ -179,15 +174,6 @@ class GameModel:
                     except Exception: pass
         except Exception: pass
 
-    def set_system_config(self, monitor_index):
-        try:
-            self.monitor_index = int(monitor_index)
-            if not self.config.has_section('System'): self.config.add_section('System')
-            self.config.set('System', 'monitor_index', str(self.monitor_index))
-            with open(self.config_path, 'w', encoding='utf-8') as f: self.config.write(f)
-            logging.info(f"螢幕設定已更新為: {self.monitor_index}")
-            return True
-        except Exception: return False
 
     def reset_statistics(self):
         self.draw_count = 0
@@ -261,12 +247,9 @@ class GameModel:
                 if self.window_tracker:
                     img = self.window_tracker.capture()
                 if img is None:
-                    # fallback: 全螢幕截圖
+                    # fallback: 主螢幕截圖
                     with mss.mss() as sct:
-                        target_idx = self.monitor_index
-                        if target_idx > len(sct.monitors) - 1: target_idx = 1
-                        monitor = sct.monitors[target_idx]
-                        sct_img = sct.grab(monitor)
+                        sct_img = sct.grab(sct.monitors[1])
                         img = np.array(sct_img)
                         img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
                         if self.screen_width != self.base_width:
@@ -615,7 +598,7 @@ class GameController:
     
     def auto_click_process(self):
         logging.info("自動點擊執行緒啟動")
-        MAX_NO_DRAW_CYCLES = 30  # 連續幾次循環無新抽卡記錄則自動停止
+        MAX_NO_DRAW_CYCLES = 50  # 連續幾次循環無新抽卡記錄則自動停止
         no_draw_cycles = 0
         last_draw_count = self.model.draw_count
         was_running = False
@@ -654,7 +637,7 @@ class GameController:
                                 f"📊 已記錄抽卡次數：{self.model.draw_count} 次\n\n"
                                 "請檢查後手動重新啟動。"
                             )
-                            self.telegram_bot.send_message_sync(alert_text, self.telegram_bot.get_main_keyboard())
+                            self.telegram_bot.send_message_sync(alert_text, self.telegram_bot.get_restart_keyboard())
                         continue
 
                     screenshot = self.model.take_screenshot()

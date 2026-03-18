@@ -184,32 +184,14 @@
 
             <div class="glass-card">
                 <div class="card-header">
-                    <span>🖥️ 系統與通知</span>
+                    <span>🔔 通知設定</span>
                 </div>
                 <div class="p-3">
-                    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                        <li class="nav-item"><button class="nav-link active py-1 btn-sm" data-bs-toggle="pill" data-bs-target="#tab-sys">螢幕</button></li>
-                        <li class="nav-item"><button class="nav-link py-1 btn-sm" data-bs-toggle="pill" data-bs-target="#tab-tg">通知</button></li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="tab-sys">
-                            <form onsubmit="updateSystem(event)">
-                                <select class="form-select mb-3" id="monitor-idx">
-                                    <option value="1">顯示器 1</option>
-                                    <option value="2">顯示器 2</option>
-                                    <option value="3">顯示器 3</option>
-                                </select>
-                                <button type="submit" class="btn btn-outline-light w-100 btn-sm">切換螢幕</button>
-                            </form>
-                        </div>
-                        <div class="tab-pane fade" id="tab-tg">
-                            <form onsubmit="updateTelegram(event)">
-                                <input type="password" class="form-control mb-2" id="tg-token" placeholder="Bot Token">
-                                <input type="text" class="form-control mb-2" id="tg-chatid" placeholder="Chat ID">
-                                <button type="submit" class="btn btn-outline-light w-100 btn-sm">更新設定</button>
-                            </form>
-                        </div>
-                    </div>
+                    <form onsubmit="updateTelegram(event)">
+                        <input type="password" class="form-control mb-2" id="tg-token" placeholder="Bot Token">
+                        <input type="text" class="form-control mb-2" id="tg-chatid" placeholder="Chat ID">
+                        <button type="submit" class="btn btn-outline-light w-100 btn-sm">更新設定</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -295,15 +277,6 @@
         }).then(() => alert('✅ 門檻參數已更新'));
     }
 
-    function updateSystem(e) {
-        e.preventDefault();
-        fetch('/api/system', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ monitor_index: parseInt(document.getElementById('monitor-idx').value) })
-        }).then(() => alert('✅ 螢幕設定已更新'));
-    }
-
     function updateTelegram(e) {
         e.preventDefault();
         fetch('/api/telegram', {
@@ -352,9 +325,7 @@
                 if (document.activeElement.tagName !== 'INPUT') {
                     document.getElementById('min-5star').value = data.config.min_5star;
                     document.getElementById('min-4star').value = data.config.min_4star;
-                    document.getElementById('monitor-idx').value = data.config.monitor_index;
-                    
-                    // [新增] 自動填入 Telegram 設定
+                    // 自動填入 Telegram 設定
                     document.getElementById('tg-token').value = data.config.tg_token;
                     document.getElementById('tg-chatid').value = data.config.tg_chat_id;
                 }

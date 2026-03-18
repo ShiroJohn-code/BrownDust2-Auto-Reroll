@@ -10,12 +10,16 @@ import time       # 新增：用於產生時間戳記
 # 定義需要檢查的關鍵模組 (對應 requirements.txt)
 REQUIRED_MODULES = [
     "cv2",          # opencv-python
+    "numpy",        # numpy
+    "PIL",          # pillow
+    "pyautogui",    # pyautogui
+    "keyboard",     # keyboard
     "mss",          # mss
+    "telegram",     # python-telegram-bot
     "fastapi",      # fastapi
     "uvicorn",      # uvicorn
-    "telegram",     # python-telegram-bot
-    "PIL",          # pillow
-    "numpy"         # numpy
+    "requests",     # requests
+    "ppadb",        # pure-python-adb
 ]
 
 def write_error_log(error_msg):

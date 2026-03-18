@@ -29,8 +29,9 @@ class TelegramController:
         self.is_running = False
         self.bot_thread = None
         self.last_notification_message_id = None
-        # 新增：保存 Bot 運行所在的 Event Loop
+        self.last_menu_message_id = None
         self.loop = None
+        self.ready_event = threading.Event()
         
     def start_bot_thread(self):
         """在新線程中啟動 bot (修正版)"""
@@ -40,9 +41,20 @@ class TelegramController:
                 self.loop = asyncio.new_event_loop()
                 asyncio.set_event_loop(self.loop)
                 
+                # post_init: 在 initialize() 完成後才設定 bot 與旗標
+                async def _on_init(app):
+                    self.bot = app.bot
+                    self.is_running = True
+                    self.ready_event.set()
+
                 # 創建應用程式
-                self.application = Application.builder().token(self.token).build()
-                
+                self.application = (
+                    Application.builder()
+                    .token(self.token)
+                    .post_init(_on_init)
+                    .build()
+                )
+
                 # 註冊處理器
                 self.application.add_handler(CommandHandler("start", self.start_command))
                 self.application.add_handler(CommandHandler("status", self.status_command))
@@ -51,26 +63,24 @@ class TelegramController:
                 self.application.add_handler(CallbackQueryHandler(self.button_callback))
                 # 註冊錯誤處理器
                 self.application.add_error_handler(self.error_handler)
-                
-                self.bot = self.application.bot
-                self.is_running = True
-                
+
                 print("Telegram Bot 正在啟動 (Thread Safe Mode)...")
-                
+
                 # 使用 run_polling，它會阻塞直到停止
                 self.application.run_polling(close_loop=False)
                 
             except Exception as e:
                 print(f"Telegram Bot 啟動失敗: {e}")
                 self.is_running = False
+                self.ready_event.set()  # 失敗時也要解除等待，避免主執行緒卡住
             finally:
                 print("Telegram Bot 線程已結束")
-            
+
         self.bot_thread = threading.Thread(target=run_bot, daemon=True)
         self.bot_thread.start()
-        
-        # 等待一下讓 Bot 啟動
-        time.sleep(2)
+
+        # 等待 Bot 真正初始化完成（最多 15 秒），取代固定 sleep(2)
+        self.ready_event.wait(timeout=15)
 
     async def error_handler(self, update: object, context: ContextTypes.DEFAULT_TYPE) -> None:
         """處理 Bot 運行時的錯誤"""
@@ -174,6 +184,32 @@ class TelegramController:
                 msg = await self.bot.send_message(chat_id=self.chat_id, text="🛑 **停止抽卡！**\n\n已停止抽卡程式。", reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
                 self.last_notification_message_id = msg.message_id
 
+        elif query.data == "restart_draw":
+            # 視窗守衛：確認遊戲視窗可用再啟動
+            wt = getattr(self.game_model, 'window_tracker', None)
+            if self.game_model.platform == "windows" and (wt is None or not wt.is_available()):
+                await query.answer("找不到遊戲視窗，請確認遊戲正在執行中", show_alert=True)
+                return
+
+            # 刪除舊的主選單訊息
+            if self.last_menu_message_id:
+                try:
+                    await self.bot.delete_message(chat_id=self.chat_id, message_id=self.last_menu_message_id)
+                except Exception:
+                    pass
+                self.last_menu_message_id = None
+
+            # 重新啟動並將此訊息轉為新主選單
+            self.game_model.running = True
+            if self.game_model.platform == "windows" and wt:
+                wt.bring_to_front()
+            await query.edit_message_text(
+                f"▶️ **抽卡已重新啟動**\n\n{self.get_overview_text()}",
+                reply_markup=self.get_main_keyboard(),
+                parse_mode='Markdown'
+            )
+            self.last_menu_message_id = query.message.message_id
+
     # --- 輔助方法 (鍵盤與文字生成) ---
     def get_main_keyboard(self):
         toggle_text = "⏸️ 暫停抽卡" if self.game_model.running else "🎮 開始抽卡"
@@ -199,6 +235,12 @@ class TelegramController:
         ]
         return InlineKeyboardMarkup(keyboard)
         
+    def get_restart_keyboard(self):
+        keyboard = [
+            [InlineKeyboardButton("▶️ 再啟動", callback_data="restart_draw")]
+        ]
+        return InlineKeyboardMarkup(keyboard)
+
     def get_success_keyboard(self):
         keyboard = [
             [InlineKeyboardButton("✅ 繼續抽卡", callback_data="continue_draw"), InlineKeyboardButton("🛑 停止抽卡", callback_data="stop_draw")]
@@ -320,7 +362,8 @@ class TelegramController:
         if not self.bot: return
         try:
             text = f"🚀 **無限抽自動化已啟動**\n\n{self.get_overview_text()}"
-            await self.bot.send_message(chat_id=self.chat_id, text=text, reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
+            msg = await self.bot.send_message(chat_id=self.chat_id, text=text, reply_markup=self.get_main_keyboard(), parse_mode='Markdown')
+            self.last_menu_message_id = msg.message_id
         except Exception as e:
             print(f"發送啟動選單錯誤: {e}")
 
